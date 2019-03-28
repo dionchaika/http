@@ -412,6 +412,8 @@ class Uri implements UriInterface
                         'Invalid host! IP address must be compliant with the "IPv6address" of the "RFC 3986" standart.'
                     );
                 }
+
+                $host = '['.$host.']';
             //
             // Matching an IPv4address.
             //

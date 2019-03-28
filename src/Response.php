@@ -144,13 +144,13 @@ class Response extends Message implements ResponseInterface
     public function withStatus($code, $reasonPhrase = '')
     {
         $new = clone $this;
-
         $new->statusCode = $new->filterStatusCode($code);
-        $new->reasonPhrase = $reasonPhrase;
 
-        if ('' === $new->reasonPhrase) {
-            $new->reasonPhrase = isset(static::REASON_PHRASES[$new->statusCode]) ? static::REASON_PHRASES[$new->statusCode] : '';
+        if ('' === $reasonPhrase) {
+            $reasonPhrase = isset(static::REASON_PHRASES[$new->statusCode]) ? static::REASON_PHRASES[$new->statusCode] : '';
         }
+
+        $new->reasonPhrase = $reasonPhrase;
 
         return $new;
     }

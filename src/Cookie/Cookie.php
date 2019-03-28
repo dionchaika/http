@@ -318,7 +318,7 @@ class Cookie
         }
 
         if (null !== $attributes['Max-Age']) {
-            if (preg_match('/^\-?[1-9][0-9]*$/', $attributes['Max-Age'])) {
+            if (preg_match('/^\-?[0-9]+$/', $attributes['Max-Age'])) {
                 $attributes['Max-Age'] = (int)$attributes['Max-Age'];
             } else {
                 $attributes['Max-Age'] = null;

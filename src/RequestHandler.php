@@ -44,8 +44,8 @@ class RequestHandler implements RequestHandlerInterface
         RequestHandlerInterface $fallbackHandler,
         array $middleware = []
     ) {
-        $this->middleware = $middleware;
         $this->fallbackHandler = $fallbackHandler;
+        $this->middleware = $middleware;
     }
 
     /**

@@ -72,7 +72,7 @@ class Request extends Message implements RequestInterface
             return $this->requestTarget;
         }
 
-        if ($this->uri instanceof UriInterface) {
+        if (null !== $this->uri) {
             $requestTarget = $this->uri->getPath();
 
             $query = $this->uri->getQuery();

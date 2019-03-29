@@ -32,7 +32,7 @@ class Request extends Message implements RequestInterface
     protected $method = 'GET';
 
     /**
-     * The request URI instance.
+     * The request URI.
      *
      * @var \Psr\Http\Message\UriInterface
      */

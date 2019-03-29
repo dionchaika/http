@@ -18,13 +18,6 @@ use Psr\Http\Message\RequestInterface;
 class Request extends Message implements RequestInterface
 {
     /**
-     * The request URI.
-     *
-     * @var \Psr\Http\Message\UriInterface
-     */
-    protected $uri;
-
-    /**
      * The request target.
      *
      * @var string
@@ -37,6 +30,13 @@ class Request extends Message implements RequestInterface
      * @var string
      */
     protected $method = 'GET';
+
+    /**
+     * The request URI instance.
+     *
+     * @var \Psr\Http\Message\UriInterface
+     */
+    protected $uri;
 
     /**
      * @param string $method

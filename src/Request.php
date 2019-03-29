@@ -22,7 +22,7 @@ class Request extends Message implements RequestInterface
      *
      * @var string
      */
-    protected $requestTarget = '/';
+    protected $requestTarget;
 
     /**
      * The request method.
@@ -68,7 +68,10 @@ class Request extends Message implements RequestInterface
      */
     public function getRequestTarget()
     {
-        if (null !== $this->requestTarget && '' !== $this->requestTarget) {
+        if (
+            null !== $this->requestTarget &&
+            '' !== $this->requestTarget
+        ) {
             return $this->requestTarget;
         }
 

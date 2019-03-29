@@ -119,8 +119,6 @@ class Uri implements UriInterface
         $isSecured = !empty($_SERVER['HTTPS']) && 'off' !== strtolower($_SERVER['HTTPS']);
 
         $scheme = $isSecured ? 'https' : 'http';
-        $user = !empty($_SERVER['PHP_AUTH_USER']) ? $_SERVER['PHP_AUTH_USER'] : '';
-        $password = !empty($_SERVER['PHP_AUTH_PW']) ? $_SERVER['PHP_AUTH_PW'] : null;
         $host = !empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : (!empty($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1');
         $port = !empty($_SERVER['SERVER_PORT']) ? (int)$_SERVER['SERVER_PORT'] : ($isSecured ? 443 : 80);
         $path = !empty($_SERVER['REQUEST_URI']) ? explode('?', $_SERVER['REQUEST_URI'], 2)[0] : '/';
@@ -128,7 +126,6 @@ class Uri implements UriInterface
 
         return (new static)
             ->withScheme($scheme)
-            ->withUserInfo($user, $password)
             ->withHost($host)
             ->withPort($port)
             ->withPath($path)

@@ -55,18 +55,10 @@ class Request extends Message implements RequestInterface
 
         $this->uri = $uri;
 
-        $host = $this->uri->getHost();
-        if ('' !== $host) {
-            $port = $this->uri->getPort();
-            if (null !== $port) {
-                $host .= ':'.$port;
-            }
-
-            $this->headers['host'] = [
-                'name' => 'Host',
-                'values' => [$host]
-            ];
-        }
+        $this->headers['host'] = [
+            'name' => 'Host',
+            'values' => [$this->getHostHeader()]
+        ];
     }
 
     /**
@@ -168,17 +160,25 @@ class Request extends Message implements RequestInterface
             return $new;
         }
 
-        $host = $new->uri->getHost();
+        return $new->withHeader('Host', $this->getHostHeader());
+    }
+
+    /**
+     * Get the request Host header.
+     *
+     * @return string
+     */
+    protected function getHostHeader()
+    {
+        $host = $this->uri->getHost();
         if ('' !== $host) {
-            $port = $new->uri->getPort();
+            $port = $this->uri->getPort();
             if (null !== $port) {
                 $host .= ':'.$port;
             }
-
-            $new = $new->withHeader('Host', $host);
         }
 
-        return $new;
+        return $host;
     }
 
     /**

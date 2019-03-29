@@ -249,10 +249,10 @@ class Client implements ClientInterface
             $message = '';
 
             foreach (explode("\r\n", $requestMessage) as $line) {
-                $message .= "> {$line}\r\n";
+                $message .= "|| -> {$line}\r\n";
             }
 
-            $message .= "\r\n";
+            $message .= "|| \r\n";
 
             if (null !== $this->config['debug_file']) {
                 try {
@@ -289,10 +289,10 @@ class Client implements ClientInterface
             $message = '';
 
             foreach (explode("\r\n", $responseMessageParts[0]) as $line) {
-                $message .= "< {$line}\r\n";
+                $message .= "|| <- {$line}\r\n";
             }
 
-            $message .= "< \r\n\r\n";
+            $message .= "|| <- \r\n\r\n";
 
             if (null !== $this->config['debug_file']) {
                 try {
@@ -329,6 +329,18 @@ class Client implements ClientInterface
             }
 
             $response = $response->withAddedHeader($headerName, $headerValues);
+        }
+
+        if (preg_match('/(gzip|deflate)/', $response->getHeaderLine('Content-Encoding'))) {
+            if (extension_loaded('zlib')) {
+                $decodedBody = zlib_decode($response->getBody());
+                if (false !== $decodedBody) {
+                    $response->getBody()->rewind();
+                    $response->getBody()->write($decodedBody);
+
+                    $response = $response->withoutHeader('Content-Encoding');
+                }
+            }
         }
 
         if (
@@ -444,6 +456,17 @@ class Client implements ClientInterface
             throw new Exception(
                 'Unable to set the remote socket timeout!'
             );
+        }
+
+        if ($this->config['debug']) {
+            $message = "|| *  {$remoteSocket}\r\n|| \r\n";
+            if (null !== $this->config['debug_file']) {
+                try {
+                    file_put_contents($this->config['debug_file'], $message, \FILE_APPEND);
+                } catch (Exception $e) {}
+            } else {
+                echo $message;
+            }
         }
 
         return $socket;

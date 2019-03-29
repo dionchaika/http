@@ -48,7 +48,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * The request parsed body.
      *
-     * @var array|object
+     * @var array|object|null
      */
     protected $parsedBody;
 
@@ -82,13 +82,10 @@ class ServerRequest extends Request implements ServerRequestInterface
     {
         $method = !empty($_POST['_method']) ? $_POST['_method'] : (!empty($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET');
 
+        $protocolVersion = '1.1';
         if (!empty($_SERVER['SERVER_PROTOCOL'])) {
-            $serverProtocol = $_SERVER['SERVER_PROTOCOL'];
-            $serverProtocolParts = explode('/', $serverProtocol, 2);
-
+            $serverProtocolParts = explode('/', $_SERVER['SERVER_PROTOCOL'], 2);
             $protocolVersion = !empty($serverProtocolParts[1]) ? $serverProtocolParts[1] : '1.1';
-        } else {
-            $protocolVersion = '1.1';
         }
 
         $uri = Uri::createFromGlobals();
@@ -109,7 +106,7 @@ class ServerRequest extends Request implements ServerRequestInterface
                 $headerName = implode('-', $headerNameParts);
                 $headerValues = array_map('trim', explode(',', $value));
 
-                $request = $request->withAddedHeader($headerName, $headerValues);
+                $request = $request->withHeader($headerName, $headerValues);
             }
         }
 

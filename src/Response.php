@@ -116,7 +116,9 @@ class Response extends Message implements ResponseInterface
         $this->statusCode = $this->filterStatusCode($code);
 
         if ('' === $reasonPhrase) {
-            $reasonPhrase = isset(static::REASON_PHRASES[$this->statusCode]) ? static::REASON_PHRASES[$this->statusCode] : '';
+            $reasonPhrase = isset(static::REASON_PHRASES[$this->statusCode])
+                ? static::REASON_PHRASES[$this->statusCode]
+                : '';
         }
 
         $this->reasonPhrase = $reasonPhrase;
@@ -147,7 +149,9 @@ class Response extends Message implements ResponseInterface
         $new->statusCode = $new->filterStatusCode($code);
 
         if ('' === $reasonPhrase) {
-            $reasonPhrase = isset(static::REASON_PHRASES[$new->statusCode]) ? static::REASON_PHRASES[$new->statusCode] : '';
+            $reasonPhrase = isset(static::REASON_PHRASES[$new->statusCode])
+                ? static::REASON_PHRASES[$new->statusCode]
+                : '';
         }
 
         $new->reasonPhrase = $reasonPhrase;

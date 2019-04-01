@@ -340,6 +340,11 @@ class Client implements ClientInterface
 
                     $response = $response->withoutHeader('Content-Encoding');
                 }
+            } else {
+                trigger_error(
+                    "Server requested with an encoded body.\r\n"
+                    ."Client requires a \"Zlib\" extension to encode the body automaticly.\r\n"
+                );
             }
         }
 

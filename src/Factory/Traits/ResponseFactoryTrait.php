@@ -45,12 +45,7 @@ trait ResponseFactoryTrait
         $response = (new Response($code, $reasonPhrase))->withHeader('Content-Type', 'text/plain');
         $response->getBody()->write($text);
 
-        $contentLength = $response->getBody()->getSize();
-        if (null !== $contentLength && 0 !== $contentLength) {
-            $response = $response->withHeader('Content-Length', (string)$contentLength);
-        }
-
-        return $response;
+        return $this->assertContentLengthHeader($response);
     }
 
     /**
@@ -67,12 +62,7 @@ trait ResponseFactoryTrait
         $response = (new Response($code, $reasonPhrase))->withHeader('Content-Type', 'text/html');
         $response->getBody()->write($html);
 
-        $contentLength = $response->getBody()->getSize();
-        if (null !== $contentLength && 0 !== $contentLength) {
-            $response = $response->withHeader('Content-Length', (string)$contentLength);
-        }
-
-        return $response;
+        return $this->assertContentLengthHeader($response);
     }
 
     /**
@@ -96,12 +86,7 @@ trait ResponseFactoryTrait
         $response = (new Response($code, $reasonPhrase))->withHeader('Content-Type', 'application/json');
         $response->getBody()->write($json);
 
-        $contentLength = $response->getBody()->getSize();
-        if (null !== $contentLength && 0 !== $contentLength) {
-            $response = $response->withHeader('Content-Length', (string)$contentLength);
-        }
-
-        return $response;
+        return $this->assertContentLengthHeader($response);
     }
 
     /**
@@ -120,12 +105,7 @@ trait ResponseFactoryTrait
         $response = (new Response($code, $reasonPhrase))->withHeader('Content-Type', 'text/xml');
         $response->getBody()->write($xml);
 
-        $contentLength = $response->getBody()->getSize();
-        if (null !== $contentLength && 0 !== $contentLength) {
-            $response = $response->withHeader('Content-Length', (string)$contentLength);
-        }
-
-        return $response;
+        return $this->assertContentLengthHeader($response);
     }
 
     /**
@@ -145,8 +125,8 @@ trait ResponseFactoryTrait
             );
         }
 
-        $contentType = mime_content_type($filename);
-        if (false === $contentType) {
+        $type = mime_content_type($filename);
+        if (false === $type) {
             throw new InvalidArgumentException(
                 'Unable to get a MIME-type of the file: '.$filename.'!'
             );
@@ -159,15 +139,10 @@ trait ResponseFactoryTrait
             );
         }
 
-        $response = (new Response($code, $reasonPhrase))->withHeader('Content-Type', $contentType);
+        $response = (new Response($code, $reasonPhrase))->withHeader('Content-Type', $type);
         $response->getBody()->write($fileContents);
 
-        $contentLength = $response->getBody()->getSize();
-        if (null !== $contentLength && 0 !== $contentLength) {
-            $response = $response->withHeader('Content-Length', (string)$contentLength);
-        }
-
-        return $response;
+        return $this->assertContentLengthHeader($response);
     }
 
     /**
@@ -200,13 +175,7 @@ trait ResponseFactoryTrait
             ->withHeader('Content-Disposition', 'attachment; filename="'.basename($filename).'"');
 
         $response->getBody()->write($fileContents);
-
-        $contentLength = $response->getBody()->getSize();
-        if (null !== $contentLength && 0 !== $contentLength) {
-            $response = $response->withHeader('Content-Length', (string)$contentLength);
-        }
-
-        return $response;
+        return $this->assertContentLengthHeader($response);
     }
 
     /**
@@ -221,5 +190,21 @@ trait ResponseFactoryTrait
     public function createRedirectResponse(string $location, int $code = 302, string $reasonPhrase = ''): ResponseInterface
     {
         return (new Response($code, $reasonPhrase))->withHeader('Location', $location);
+    }
+
+    /**
+     * Assert a response Content-Length header.
+     *
+     * @param \Psr\Http\Message\ResponseInterface $response
+     * @return \Psr\Http\Message\ResponseInterface
+     */
+    protected function assertContentLengthHeader(ResponseInterface $response): ResponseInterface
+    {
+        $size = $response->getBody()->getSize();
+        if (null !== $size && 0 !== $size) {
+            return $response->withHeader('Content-Length', (string)$size);
+        }
+
+        return $response;
     }
 }

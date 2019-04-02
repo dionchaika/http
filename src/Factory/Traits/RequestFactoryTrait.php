@@ -45,19 +45,14 @@ trait RequestFactoryTrait
     {
         if ('GET' === $method || 'HEAD' === $method) {
             throw new InvalidArgumentException(
-                'Request with a GET or HEAD method cannot contain a body'
+                'Request with a GET or HEAD method cannot contain a body!'
             );
         }
 
         $request = (new Request($method, $uri))->withHeader('Content-Type', 'text/plain');
         $request->getBody()->write($text);
 
-        $contentLength = $request->getBody()->getSize();
-        if (null !== $contentLength && 0 !== $contentLength) {
-            $request = $request->withHeader('Content-Length', (string)$contentLength);
-        }
-
-        return $request;
+        return $this->assertContentLengthHeader($request);
     }
 
     /**
@@ -73,7 +68,7 @@ trait RequestFactoryTrait
     {
         if ('GET' === $method || 'HEAD' === $method) {
             throw new InvalidArgumentException(
-                'Request with a GET or HEAD method cannot contain a body'
+                'Request with a GET or HEAD method cannot contain a body!'
             );
         }
 
@@ -87,12 +82,7 @@ trait RequestFactoryTrait
         $request = (new Request($method, $uri))->withHeader('Content-Type', 'application/json');
         $request->getBody()->write($json);
 
-        $contentLength = $request->getBody()->getSize();
-        if (null !== $contentLength && 0 !== $contentLength) {
-            $request = $request->withHeader('Content-Length', (string)$contentLength);
-        }
-
-        return $request;
+        return $this->assertContentLengthHeader($request);
     }
 
     /**
@@ -108,7 +98,7 @@ trait RequestFactoryTrait
     {
         if ('GET' === $method || 'HEAD' === $method) {
             throw new InvalidArgumentException(
-                'Request with a GET or HEAD method cannot contain a body'
+                'Request with a GET or HEAD method cannot contain a body!'
             );
         }
 
@@ -117,12 +107,7 @@ trait RequestFactoryTrait
         $request = (new Request($method, $uri))->withHeader('Content-Type', 'text/xml');
         $request->getBody()->write($xml);
 
-        $contentLength = $request->getBody()->getSize();
-        if (null !== $contentLength && 0 !== $contentLength) {
-            $request = $request->withHeader('Content-Length', (string)$contentLength);
-        }
-
-        return $request;
+        return $this->assertContentLengthHeader($request);
     }
 
     /**
@@ -138,7 +123,7 @@ trait RequestFactoryTrait
     {
         if ('GET' === $method || 'HEAD' === $method) {
             throw new InvalidArgumentException(
-                'Request with a GET or HEAD method cannot contain a body'
+                'Request with a GET or HEAD method cannot contain a body!'
             );
         }
 
@@ -152,12 +137,7 @@ trait RequestFactoryTrait
         $request = (new Request($method, $uri))->withHeader('Content-Type', 'application/x-www-form-urlencoded');
         $request->getBody()->write($urlencoded);
 
-        $contentLength = $request->getBody()->getSize();
-        if (null !== $contentLength && 0 !== $contentLength) {
-            $request = $request->withHeader('Content-Length', (string)$contentLength);
-        }
-
-        return $request;
+        return $this->assertContentLengthHeader($request);
     }
 
     /**
@@ -173,7 +153,7 @@ trait RequestFactoryTrait
     {
         if ('GET' === $method || 'HEAD' === $method) {
             throw new InvalidArgumentException(
-                'Request with a GET or HEAD method cannot contain a body'
+                'Request with a GET or HEAD method cannot contain a body!'
             );
         }
 
@@ -182,9 +162,20 @@ trait RequestFactoryTrait
         $request = (new Request($method, $uri))->withHeader('Content-Type', 'multipart/form-data; boundary='.$boundary);
         $request->getBody()->write($formData);
 
-        $contentLength = $request->getBody()->getSize();
-        if (null !== $contentLength && 0 !== $contentLength) {
-            $request = $request->withHeader('Content-Length', (string)$contentLength);
+        return $this->assertContentLengthHeader($request);
+    }
+
+    /**
+     * Assert a request Content-Length header.
+     *
+     * @param \Psr\Http\Message\RequestInterface $request
+     * @return \Psr\Http\Message\RequestInterface
+     */
+    protected function assertContentLengthHeader(RequestInterface $request): RequestInterface
+    {
+        $size = $request->getBody()->getSize();
+        if (null !== $size && 0 !== $size) {
+            return $request->withHeader('Content-Length', (string)$size);
         }
 
         return $request;

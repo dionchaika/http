@@ -31,7 +31,12 @@ class Emitter
             );
         }
 
-        header('HTTP/'.$response->getProtocolVersion().' '.$response->getStatusCode().' '.$response->getReasonPhrase(), true);
+        header(implode(' ', [
+            'HTTP/'.$response->getProtocolVersion(),
+            $response->getStatusCode(),
+            $response->getReasonPhrase()
+        ]), true);
+
         foreach (array_keys($response->getHeaders()) as $header) {
             if ('set-cookie' === strtolower($header)) {
                 foreach ($response->getHeader('Set-Cookie') as $setCookie) {

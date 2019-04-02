@@ -139,7 +139,7 @@ class Response extends Message implements ResponseInterface
             );
         }
 
-        if (!preg_match('/^.+\r\n\r\n.*$/', $response)) {
+        if (false === strpos($response, "\r\n\r\n")) {
             throw new InvalidArgumentException(
                 'Invalid response! Response must be compliant with the "RFC 7230" standart.'
             );

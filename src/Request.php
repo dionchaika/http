@@ -76,7 +76,7 @@ class Request extends Message implements RequestInterface
             );
         }
 
-        if (!preg_match('/^.+\r\n\r\n.*$/', $request)) {
+        if (false === strpos($request, "\r\n\r\n")) {
             throw new InvalidArgumentException(
                 'Invalid request! Request must be compliant with the "RFC 7230" standart.'
             );

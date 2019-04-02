@@ -114,6 +114,12 @@ class Request extends Message implements RequestInterface
             $request = $request->withAddedHeader($headerName, $headerValues);
         }
 
+        if (!$request->hasHeader('Host')) {
+            throw new InvalidArgumentException(
+                'Invalid request! "HTTP/1.1" request must contain a "Host" header.'
+            );
+        }
+
         return $request;
     }
 

@@ -93,14 +93,15 @@ trait ResponseFactoryTrait
      * Create a new XML response.
      *
      * @param array $data
+     * @param string $encoding
      * @param int $code
      * @param string $reasonPhrase
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \InvalidArgumentException
      */
-    public function createXmlResponse(array $data, int $code = 200, string $reasonPhrase = ''): ResponseInterface
+    public function createXmlResponse(array $data, string $encoding = 'utf-8', int $code = 200, string $reasonPhrase = ''): ResponseInterface
     {
-        $xml = XmlBuilder::createFromArray($data);
+        $xml = XmlBuilder::createFromArray($data, $encoding);
 
         $response = (new Response($code, $reasonPhrase))->withHeader('Content-Type', 'text/xml');
         $response->getBody()->write($xml);

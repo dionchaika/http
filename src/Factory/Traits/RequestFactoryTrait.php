@@ -91,10 +91,11 @@ trait RequestFactoryTrait
      * @param string $method
      * @param \Psr\Http\Message\UriInterface|string $uri
      * @param array $data
+     * @param string $encoding
      * @return \Psr\Http\Message\RequestInterface
      * @throws \InvalidArgumentException
      */
-    public function createXmlRequest(string $method, $uri, array $data): RequestInterface
+    public function createXmlRequest(string $method, $uri, array $data, string $encoding = 'utf-8'): RequestInterface
     {
         if ('GET' === $method || 'HEAD' === $method) {
             throw new InvalidArgumentException(
@@ -102,7 +103,7 @@ trait RequestFactoryTrait
             );
         }
 
-        $xml = XmlBuilder::createFromArray($data);
+        $xml = XmlBuilder::createFromArray($data, $encoding);
 
         $request = (new Request($method, $uri))->withHeader('Content-Type', 'text/xml');
         $request->getBody()->write($xml);

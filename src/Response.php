@@ -125,6 +125,24 @@ class Response extends Message implements ResponseInterface
     }
 
     /**
+     * Create a new response from string.
+     *
+     * @param string $response
+     * @return \Dionchaika\Http\Response
+     * @throws \InvalidArgumentException
+     */
+    public static function createFromString($response)
+    {
+        if (!is_string($response)) {
+            throw new InvalidArgumentException(
+                'Invalid response! Response must be a string.'
+            );
+        }
+
+        //
+    }
+
+    /**
      * Get the response status code.
      *
      * @return int

@@ -62,6 +62,24 @@ class Request extends Message implements RequestInterface
     }
 
     /**
+     * Create a new request from string.
+     *
+     * @param string $request
+     * @return \Dionchaika\Http\Request
+     * @throws \InvalidArgumentException
+     */
+    public static function createFromString($request)
+    {
+        if (!is_string($request)) {
+            throw new InvalidArgumentException(
+                'Invalid request! Request must be a string.'
+            );
+        }
+
+        //
+    }
+
+    /**
      * Get the request target.
      *
      * @return string

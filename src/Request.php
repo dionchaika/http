@@ -281,7 +281,7 @@ class Request extends Message implements RequestInterface
         $request = "{$this->getMethod()} {$this->getRequestTarget()} HTTP/{$this->getProtocolVersion()}\r\n";
         foreach (array_keys($this->getHeaders()) as $header) {
             if ('cookie' === strtolower($header)) {
-                $cookie = implode(';', $this->getHeader('Cookie'));
+                $cookie = implode('; ', $this->getHeader('Cookie'));
                 $request .= "{$header}: {$cookie}\r\n";
             } else {
                 $request .= "{$header}: {$this->getHeaderLine($header)}\r\n";

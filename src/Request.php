@@ -76,7 +76,45 @@ class Request extends Message implements RequestInterface
             );
         }
 
-        //
+        if (!preg_match('/^.+\r\n\r\n.*$/', $request)) {
+            throw new InvalidArgumentException(
+                'Invalid request! Request must be compliant with the "RFC 7230" standart.'
+            );
+        }
+
+        $requestParts = explode("\r\n\r\n", $request, 2);
+
+        $headers = explode("\r\n", $requestParts[0]);
+        $body = $requestParts[1];
+
+        $requestLineParts = array_filter(explode(' ', array_shift($headers), 3));
+        if (3 !== count($requestLineParts) || !preg_match('/^HTTP\/\d\.\d$/', $requestLineParts[3])) {
+            throw new InvalidArgumentException(
+                'Invalid request! Request must be compliant with the "RFC 7230" standart.'
+            );
+        }
+
+        $method = $requestLineParts[0];
+        $requestTarget = $requestLineParts[1];
+        $protocolVersion = explode('/', $requestLineParts[3], 2)[1];
+
+        $request = (new static($method))
+            ->withoutHeader('Host')
+            ->withRequestTarget($requestTarget)
+            ->withProtocolVersion($protocolVersion);
+
+        $request->getBody()->write($body);
+
+        foreach ($headers as $header) {
+            $headerParts = explode(':', $header, 2);
+
+            $headerName = $headerParts[0];
+            $headerValues = array_map('trim', explode(',', $headerParts[1]));
+
+            $request = $request->withAddedHeader($headerName, $headerValues);
+        }
+
+        return $request;
     }
 
     /**

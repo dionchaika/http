@@ -139,7 +139,41 @@ class Response extends Message implements ResponseInterface
             );
         }
 
-        //
+        if (!preg_match('/^.+\r\n\r\n.*$/', $response)) {
+            throw new InvalidArgumentException(
+                'Invalid response! Response must be compliant with the "RFC 7230" standart.'
+            );
+        }
+
+        $responseParts = explode("\r\n\r\n", $response, 2);
+
+        $headers = explode("\r\n", $responseParts[0]);
+        $body = $responseParts[1];
+
+        $statusLineParts = array_filter(explode(' ', array_shift($headers), 3));
+        if (2 > count($statusLineParts) || !preg_match('/^HTTP\/\d\.\d$/', $statusLineParts[0])) {
+            throw new InvalidArgumentException(
+                'Invalid response! Response must be compliant with the "RFC 7230" standart.'
+            );
+        }
+
+        $protocolVersion = explode('/', $statusLineParts[0], 2)[1];
+        $statusCode = (int)$statusLineParts[1];
+        $reasonPhrase = isset($statusLineParts[2]) ? $statusLineParts[2] : '';
+
+        $response = (new static($statusCode, $reasonPhrase))->withProtocolVersion($protocolVersion);
+        $response->getBody()->write($body);
+
+        foreach ($headers as $header) {
+            $headerParts = explode(':', $header, 2);
+
+            $headerName = $headerParts[0];
+            $headerValues = array_map('trim', explode(',', $headerParts[1]));
+
+            $response = $response->withAddedHeader($headerName, $headerValues);
+        }
+
+        return $response;
     }
 
     /**

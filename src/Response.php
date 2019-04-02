@@ -261,7 +261,13 @@ class Response extends Message implements ResponseInterface
     {
         $response = "HTTP/{$this->getProtocolVersion()} {$this->getStatusCode()} {$this->getReasonPhrase()}\r\n";
         foreach (array_keys($this->getHeaders()) as $header) {
-            $response .= "{$header}: {$this->getHeaderLine($header)}\r\n";
+            if ('set-cookie' === strtolower($header)) {
+                foreach ($this->getHeader('Set-Cookie') as $setCookie) {
+                    $response .= "{$header}: {$setCookie}\r\n";
+                }
+            } else {
+                $response .= "{$header}: {$this->getHeaderLine($header)}\r\n";
+            }
         }
 
         return "{$response}\r\n{$this->getBody()}";

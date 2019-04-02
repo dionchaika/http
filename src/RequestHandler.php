@@ -29,8 +29,7 @@ class RequestHandler implements RequestHandlerInterface
     protected $middleware = [];
 
     /**
-     * The fallback handler
-     * instance of the request handler.
+     * The request fallback handler.
      *
      * @var \Psr\Http\Server\RequestHandlerInterface
      */

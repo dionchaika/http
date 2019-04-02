@@ -29,8 +29,33 @@ class FormData
      */
     protected $entries = [];
 
-    public function __construct()
+    /**
+     * @param array $formData
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(array $formData = [])
     {
+        foreach ($formData as $entry) {
+            if (!isset($entry['name'])) {
+                throw new InvalidArgumentException(
+                    'Invalid form data! Form data field is not set: name!'
+                );
+            }
+
+            if (!isset($entry['value'])) {
+                throw new InvalidArgumentException(
+                    'Invalid form data! Form data field is not set: value!'
+                );
+            }
+
+            $this->append(
+                $entry['name'],
+                $entry['value'],
+                isset($entry['filename']) ? $entry['filename'] : null,
+                isset($entry['headers']) ? $entry['headers'] : []
+            );
+        }
+
         $this->boundary = $this->generateBoudary();
     }
 
@@ -79,14 +104,14 @@ class FormData
             $filename = $filename ?? basename($filePath);
 
             if (!in_array('content-type', array_change_key_case($headers, \CASE_LOWER))) {
-                $contentType = mime_content_type($filePath);
-                if (false === $contentType) {
+                $type = mime_content_type($filePath);
+                if (false === $type) {
                     throw new InvalidArgumentException(
                         'Unable to get a MIME-type of the file: '.$filePath.'!'
                     );
                 }
 
-                $headers['Content-Type'] = $contentType;
+                $headers['Content-Type'] = $type;
             }
         }
 
@@ -150,7 +175,6 @@ class FormData
             }
         }
 
-        $formData .= "--{$this->boundary}";
-        return $formData;
+        return "{$formData}--{$this->boundary}";
     }
 }

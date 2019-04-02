@@ -198,4 +198,20 @@ class Response extends Message implements ResponseInterface
 
         return $code;
     }
+
+    /**
+     * Return the string
+     * representation of the response.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        $response = "HTTP/{$this->getProtocolVersion()} {$this->getStatusCode()} {$this->getReasonPhrase()}\r\n";
+        foreach (array_keys($this->getHeaders()) as $header) {
+            $response .= "{$header}: {$this->getHeaderLine($header)}\r\n";
+        }
+
+        return "{$response}\r\n{$this->getBody()}";
+    }
 }

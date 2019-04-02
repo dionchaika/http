@@ -207,4 +207,20 @@ class Request extends Message implements RequestInterface
 
         return $method;
     }
+
+    /**
+     * Return the string
+     * representation of the request.
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        $request = "{$this->getMethod()} {$this->getRequestTarget()} HTTP/{$this->getProtocolVersion()}\r\n";
+        foreach (array_keys($this->getHeaders()) as $header) {
+            $request .= "{$header}: {$this->getHeaderLine($header)}\r\n";
+        }
+
+        return "{$request}\r\n{$this->getBody()}";
+    }
 }

@@ -146,20 +146,20 @@ abstract class Message implements MessageInterface
      */
     public function withAddedHeader($name, $value)
     {
-        $lowercaseName = strtolower($name);
+        $normalizedName = strtolower($name);
 
         $new = clone $this;
 
-        if (!isset($new->headers[$lowercaseName])) {
-            $new->headers[$lowercaseName] = [
+        if (!isset($new->headers[$normalizedName])) {
+            $new->headers[$normalizedName] = [
                 'name' => $new->filterHeaderName($name),
                 'values' => []
             ];
         }
 
-        $new->headers[$lowercaseName]['values']
+        $new->headers[$normalizedName]['values']
             = array_merge(
-                $new->headers[$lowercaseName]['values'],
+                $new->headers[$normalizedName]['values'],
                 $new->filterHeaderValue($value)
             );
 

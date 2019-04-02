@@ -38,13 +38,13 @@ class FormData
         foreach ($formData as $entry) {
             if (!isset($entry['name'])) {
                 throw new InvalidArgumentException(
-                    'Invalid form data! Form data field is not set: name!'
+                    'Invalid form data! Form data field name is not set.'
                 );
             }
 
             if (!isset($entry['value'])) {
                 throw new InvalidArgumentException(
-                    'Invalid form data! Form data field is not set: value!'
+                    'Invalid form data! Form data field value is not set.'
                 );
             }
 

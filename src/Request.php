@@ -76,7 +76,33 @@ class Request extends Message implements RequestInterface
             );
         }
 
-        //
+        $requestParts = explode("\r\n\r\n", $request, 2);
+
+        $headers = explode("\r\n", $requestParts[0]);
+        $body = $requestParts[1];
+
+        $requestLineParts = explode(' ', array_shift($headers), 3);
+
+        $method = trim($requestLineParts[0]);
+        $requestTarget = trim($requestLineParts[1]);
+        $protocolVersion = explode('/', trim($requestLineParts[2]), 2)[1];
+
+        $request = (new static($method))
+            ->withProtocolVersion($protocolVersion)
+            ->withRequestTarget($requestTarget);
+
+        $request->getBody()->write($body);
+
+        foreach ($headers as $header) {
+            $headerParts = explode(':', $header, 2);
+
+            $headerName = trim($headerParts[0]);
+            $headerValues = array_map('trim', explode(',', $headerParts[1]));
+
+            $request = $request->withAddedHeader($headerName, $headerValues);
+        }
+
+        return $request;
     }
 
     /**

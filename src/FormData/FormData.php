@@ -103,7 +103,7 @@ class FormData
 
             $filename = $filename ?? basename($filePath);
 
-            if (!in_array('content-type', array_change_key_case($headers, \CASE_LOWER))) {
+            if (!array_key_exists('content-type', array_change_key_case($headers, \CASE_LOWER))) {
                 $type = mime_content_type($filePath);
                 if (false === $type) {
                     throw new InvalidArgumentException(

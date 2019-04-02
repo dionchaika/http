@@ -318,14 +318,14 @@ class Cookie
         }
 
         if (null !== $attributes['Max-Age']) {
-            if (preg_match('/^\-?[0-9]+$/', $attributes['Max-Age'])) {
+            if (preg_match('/^\d+$/', $attributes['Max-Age'])) {
                 $attributes['Max-Age'] = (int)$attributes['Max-Age'];
             } else {
                 $attributes['Max-Age'] = null;
             }
         }
 
-        if (null !== $attributes['Max-Age']) {
+        if (null !== $attributes['Max-Age'] && null === $attributes['Expires']) {
             $expiryTime = time() + $attributes['Max-Age'];
         } else if (null !== $attributes['Expires']) {
             $expiryTime = $attributes['Expires'];

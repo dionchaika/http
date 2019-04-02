@@ -364,7 +364,7 @@ class Uri implements UriInterface
                 );
             }
 
-            $scheme = strtolower($scheme);
+            return strtolower($scheme);
         }
 
         return $scheme;
@@ -431,7 +431,7 @@ class Uri implements UriInterface
                 }
             }
 
-            $host = strtolower($host);
+            return strtolower($host);
         }
 
         return $host;
@@ -459,7 +459,7 @@ class Uri implements UriInterface
                 );
             }
 
-            $port = $this->isNonStandartPort($this->scheme, $port) ? $port : null;
+            return $this->isNonStandartPort($this->scheme, $port) ? $port : null;
         }
 
         return $port;
@@ -521,7 +521,7 @@ class Uri implements UriInterface
                 );
             }
 
-            $path = preg_replace_callback('/(?:[^a-zA-Z0-9\-._~!$&\'()*+,;=:@\/%]++|%(?![a-fA-F0-9]{2}))/', function ($matches) {
+            return preg_replace_callback('/(?:[^a-zA-Z0-9\-._~!$&\'()*+,;=:@\/%]++|%(?![a-fA-F0-9]{2}))/', function ($matches) {
                 return rawurlencode($matches[0]);
             }, $path);
         }
@@ -551,7 +551,7 @@ class Uri implements UriInterface
                 );
             }
 
-            $query = preg_replace_callback('/(?:[^a-zA-Z0-9\-._~!$&\'()*+,;=:@\/?%]++|%(?![a-fA-F0-9]{2}))/', function ($matches) {
+            return preg_replace_callback('/(?:[^a-zA-Z0-9\-._~!$&\'()*+,;=:@\/?%]++|%(?![a-fA-F0-9]{2}))/', function ($matches) {
                 return rawurlencode($matches[0]);
             }, $query);
         }
@@ -568,7 +568,7 @@ class Uri implements UriInterface
     protected function filterFragment($fragment)
     {
         if ('' !== $fragment) {
-            $fragment = preg_replace_callback('/(?:[^a-zA-Z0-9\-._~!$&\'()*+,;=:@\/?%]++|%(?![a-fA-F0-9]{2}))/', function ($matches) {
+            return preg_replace_callback('/(?:[^a-zA-Z0-9\-._~!$&\'()*+,;=:@\/?%]++|%(?![a-fA-F0-9]{2}))/', function ($matches) {
                 return rawurlencode($matches[0]);
             }, $fragment);
         }

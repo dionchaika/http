@@ -19,7 +19,7 @@ use Psr\Http\Client\ClientExceptionInterface;
 class ClientException extends Exception implements ClientExceptionInterface
 {
     /**
-     * The client exception request instance.
+     * The client exception request.
      *
      * @var \Psr\Http\Message\RequestInterface
      */
@@ -27,14 +27,14 @@ class ClientException extends Exception implements ClientExceptionInterface
 
     /**
      * @param \Psr\Http\Message\RequestInterface $request
-     * @param string                             $message
-     * @param int                                $code
-     * @param \Throwable                         $previous
+     * @param string $message
+     * @param int $code
+     * @param \Throwable $previous
      */
     public function __construct(
         RequestInterface $request,
-        string $message     = '',
-        int $code           = 0,
+        string $message = '',
+        int $code = 0,
         Throwable $previous = null
     ) {
         $this->request = $request;

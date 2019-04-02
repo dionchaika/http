@@ -92,6 +92,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         $uploadedFiles = UploadedFile::createFromGlobals();
 
         $request = (new static($method, $uri, $_SERVER))
+            ->withoutHeader('Host')
             ->withProtocolVersion($protocolVersion)
             ->withQueryParams($_GET)
             ->withParsedBody($_POST)
@@ -106,7 +107,7 @@ class ServerRequest extends Request implements ServerRequestInterface
                 $headerName = implode('-', $headerNameParts);
                 $headerValues = array_map('trim', explode(',', $value));
 
-                $request = $request->withHeader($headerName, $headerValues);
+                $request = $request->withAddedHeader($headerName, $headerValues);
             }
         }
 

@@ -88,7 +88,7 @@ class Request extends Message implements RequestInterface
         $body = $requestParts[1];
 
         $requestLineParts = array_filter(explode(' ', array_shift($headers), 3));
-        if (3 !== count($requestLineParts) || !preg_match('/^HTTP\/\d\.\d$/', $requestLineParts[3])) {
+        if (3 !== count($requestLineParts) || !preg_match('/^HTTP\/\d\.\d$/', $requestLineParts[2])) {
             throw new InvalidArgumentException(
                 'Invalid request! Request must be compliant with the "RFC 7230" standart.'
             );
@@ -96,7 +96,7 @@ class Request extends Message implements RequestInterface
 
         $method = $requestLineParts[0];
         $requestTarget = $requestLineParts[1];
-        $protocolVersion = explode('/', $requestLineParts[3], 2)[1];
+        $protocolVersion = explode('/', $requestLineParts[2], 2)[1];
 
         $request = (new static($method))
             ->withoutHeader('Host')

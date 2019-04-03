@@ -871,7 +871,7 @@ class Cookie
      */
     protected function updateExpiryTime(?string $expires, ?int $maxAge): int
     {
-        if (null !== $maxAge) {
+        if (null !== $maxAge && null === $expires) {
             return time() + $maxAge;
         }
 

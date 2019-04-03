@@ -45,7 +45,7 @@ trait ResponseFactoryTrait
         $response = (new Response($code, $reasonPhrase))->withHeader('Content-Type', 'text/plain');
         $response->getBody()->write($text);
 
-        return $this->assertContentLengthHeader($response);
+        return $this->assertResponseContentLengthHeader($response);
     }
 
     /**
@@ -62,7 +62,7 @@ trait ResponseFactoryTrait
         $response = (new Response($code, $reasonPhrase))->withHeader('Content-Type', 'text/html');
         $response->getBody()->write($html);
 
-        return $this->assertContentLengthHeader($response);
+        return $this->assertResponseContentLengthHeader($response);
     }
 
     /**
@@ -86,7 +86,7 @@ trait ResponseFactoryTrait
         $response = (new Response($code, $reasonPhrase))->withHeader('Content-Type', 'application/json');
         $response->getBody()->write($json);
 
-        return $this->assertContentLengthHeader($response);
+        return $this->assertResponseContentLengthHeader($response);
     }
 
     /**
@@ -106,7 +106,7 @@ trait ResponseFactoryTrait
         $response = (new Response($code, $reasonPhrase))->withHeader('Content-Type', 'text/xml');
         $response->getBody()->write($xml);
 
-        return $this->assertContentLengthHeader($response);
+        return $this->assertResponseContentLengthHeader($response);
     }
 
     /**
@@ -143,7 +143,7 @@ trait ResponseFactoryTrait
         $response = (new Response($code, $reasonPhrase))->withHeader('Content-Type', $type);
         $response->getBody()->write($fileContents);
 
-        return $this->assertContentLengthHeader($response);
+        return $this->assertResponseContentLengthHeader($response);
     }
 
     /**
@@ -176,7 +176,7 @@ trait ResponseFactoryTrait
             ->withHeader('Content-Disposition', 'attachment; filename="'.basename($filename).'"');
 
         $response->getBody()->write($fileContents);
-        return $this->assertContentLengthHeader($response);
+        return $this->assertResponseContentLengthHeader($response);
     }
 
     /**
@@ -199,7 +199,7 @@ trait ResponseFactoryTrait
      * @param \Psr\Http\Message\ResponseInterface $response
      * @return \Psr\Http\Message\ResponseInterface
      */
-    protected function assertContentLengthHeader(ResponseInterface $response): ResponseInterface
+    protected function assertResponseContentLengthHeader(ResponseInterface $response): ResponseInterface
     {
         $size = $response->getBody()->getSize();
         if (null !== $size && 0 !== $size) {

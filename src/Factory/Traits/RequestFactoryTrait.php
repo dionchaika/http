@@ -52,7 +52,7 @@ trait RequestFactoryTrait
         $request = (new Request($method, $uri))->withHeader('Content-Type', 'text/plain');
         $request->getBody()->write($text);
 
-        return $this->assertContentLengthHeader($request);
+        return $this->assertRequestContentLengthHeader($request);
     }
 
     /**
@@ -82,7 +82,7 @@ trait RequestFactoryTrait
         $request = (new Request($method, $uri))->withHeader('Content-Type', 'application/json');
         $request->getBody()->write($json);
 
-        return $this->assertContentLengthHeader($request);
+        return $this->assertRequestContentLengthHeader($request);
     }
 
     /**
@@ -108,7 +108,7 @@ trait RequestFactoryTrait
         $request = (new Request($method, $uri))->withHeader('Content-Type', 'text/xml');
         $request->getBody()->write($xml);
 
-        return $this->assertContentLengthHeader($request);
+        return $this->assertRequestContentLengthHeader($request);
     }
 
     /**
@@ -138,7 +138,7 @@ trait RequestFactoryTrait
         $request = (new Request($method, $uri))->withHeader('Content-Type', 'application/x-www-form-urlencoded');
         $request->getBody()->write($urlencoded);
 
-        return $this->assertContentLengthHeader($request);
+        return $this->assertRequestContentLengthHeader($request);
     }
 
     /**
@@ -163,7 +163,7 @@ trait RequestFactoryTrait
         $request = (new Request($method, $uri))->withHeader('Content-Type', 'multipart/form-data; boundary='.$boundary);
         $request->getBody()->write($formData);
 
-        return $this->assertContentLengthHeader($request);
+        return $this->assertRequestContentLengthHeader($request);
     }
 
     /**
@@ -172,7 +172,7 @@ trait RequestFactoryTrait
      * @param \Psr\Http\Message\RequestInterface $request
      * @return \Psr\Http\Message\RequestInterface
      */
-    protected function assertContentLengthHeader(RequestInterface $request): RequestInterface
+    protected function assertRequestContentLengthHeader(RequestInterface $request): RequestInterface
     {
         $size = $request->getBody()->getSize();
         if (null !== $size && 0 !== $size) {

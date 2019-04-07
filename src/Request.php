@@ -225,7 +225,7 @@ class Request extends Message implements RequestInterface
             return $new;
         }
 
-        return $new->withHeader('Host', $this->getHostHeader());
+        return $new->withHeader('Host', $new->getHostHeader());
     }
 
     /**

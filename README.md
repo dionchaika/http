@@ -36,6 +36,8 @@ $uri = (new Uri)
     ->withHost('example.com')
     ->withPath('/index.php')
     ->withQuery('foo=bar&baz=bat');
+
+echo $uri; /* [http://example.com/index.php?foo=bar&baz=bat] */
 ```
 
 You can also create a new URI instance from PHP globals:

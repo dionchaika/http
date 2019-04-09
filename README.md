@@ -24,29 +24,26 @@ require_once 'vendor/autoload.php';
 
 use Dionchaika\Http\Uri;
 
-$uri = new Uri('http://user:password@example.com:8080/index.php?foo=bar&baz=bat#hash');
+$uri = new Uri('http://example.com/index.php?foo=bar&baz=bat');
 
-$scheme = $uri->getScheme(); /* http */
-$authority = $uri->getAuthority(); /* user:password@example.com:8080 */
-$userInfo = $uri->getUserInfo(); /* user:password */
-$host = $uri->getHost(); /* example.com */
-$port = $uri->getPort(); /* 8080 */
-$path = $uri->getPath(); /* /index.php */
-$query = $uri->getQuery(); /* foo=bar&baz=bat */
-$fragment = $uri->getFragment(); /* hash */
+$scheme = $uri->getScheme(); // (http)
+$host = $uri->getHost(); // (example.com)
+$path = $uri->getPath(); // (/index.php)
+$query = $uri->getQuery(); // (foo=bar&baz=bat)
 
 $uri = (new Uri)
     ->withScheme('http')
-    ->withUserInfo('user:password')
     ->withHost('example.com')
-    ->withPort(8080)
     ->withPath('/index.php')
-    ->withQuery('foo=bar&baz=bat')
-    ->withFragment('hash');
+    ->withQuery('foo=bar&baz=bat');
 ```
 
-You can also create a URI instance from PHP globals:
+You can also create a new URI instance from PHP globals:
 
 ```php
+<?php
+
+use Dionchaika\Http\Uri;
+
 $uri = Uri::createFromGlobals();
 ```

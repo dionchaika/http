@@ -57,6 +57,8 @@ use Dionchaika\Http\Request;
 $request = (new Request('GET', 'http://example.com/index.php?foo=bar&baz=bat'))
     ->withHeader('Cookie', ['foo=bar', 'baz=bat'])
     ->withHeader('Accept', 'text/html; charset=utf-8');
+
+echo $request; /* [GET /index.php?foo=bar&baz=bat HTTP/1.1\r\nHost: example.com\r\n...] */
 ```
 
 You can also create a new request instance from string:

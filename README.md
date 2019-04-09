@@ -1,6 +1,11 @@
 # http
 The Psr Http Library
 
+## Requirements
+
+1. PHP 7
+2. PHP Zlib extention (optional)
+
 ## Installation
 
 ```bash

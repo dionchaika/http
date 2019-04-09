@@ -112,3 +112,82 @@ $message .= "<!DOCTYPE html><html>...</html>";
 
 $response = Response::createFromString($message);
 ```
+
+### 3. Stream
+```php
+<?php
+
+use Dionchaika\Http\Stream;
+
+/* Create a new stream from string */
+$stream = new Stream('Hello, World!');
+
+/* Create a new stream from file */
+$stream = new Stream('/path/to/file');
+
+/* Create a new stream from resorce */
+$stream = new Stream(fopen('php://input', 'r'));
+
+$size = $stream->getSize(); /* Returns the stream size in bytes */
+$isReadable = $stream->isReadable(); /* Returns true if the stream is readable */
+$isWritable = $stream->isWritable(); /* Returns true if the stream is writable */
+
+$stream->write(' This is some text...');
+
+echo $stream; /* [Hello, World! This is some text...] */
+```
+
+You can also pass optional parameters to the stream:
+
+```php
+<?php
+
+use Dionchaika\Http\Stream;
+
+$stream = new Stream('This is some text...', [
+    'size' => 1024,
+    'seekable' => true,
+    'readable' => true,
+    'writable' => false
+]);
+```
+
+### 4. ServerRequest
+```php
+<?php
+
+use Dionchaika\Http\ServerRequest;
+
+$request = (new ServerRequest('GET', 'http://example.com/index.php?foo=bar&baz=bat', $_SERVER))
+    ->withAttribute('action', 'index')
+    ->withAttribute('controller', 'home');
+
+$user = $request->getQueryParams()['user']; /* Returns $_GET['user'] if set */
+$password = $request->getQueryParams()['password']; /* Returns $_GET['password'] if set */
+```
+
+You can also create a new server request instance from PHP globals:
+
+```php
+<?php
+
+use Dionchaika\Http\ServerRequest;
+
+$request = ServerRequest::createFromGlobals();
+
+/* ... */
+
+switch ($request->getUri()->getPath()) {
+    case '/':
+        /* ... */
+        break;
+    case '/about':
+        /* ... */
+        break;
+    case '/contact':
+        /* ... */
+        break;
+}
+
+/* ... */
+```

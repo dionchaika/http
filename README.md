@@ -78,3 +78,39 @@ $message .= "\r\n";
 
 $request = Request::createFromString($message);
 ```
+
+### 2. Response
+```php
+<?php
+
+use Dionchaika\Http\Response;
+
+$response = (new Response(200, 'OK'))
+    ->withHeader('Contet-Type', 'text/html; charset=utf-8')
+    ->withAddedHeader('Set-Cookie', 'foo=bar; Max-Age=3600; Path=/; Secure; HttpOnly')
+    ->withAddedHeader('Set-Cookie', 'baz=bat; Max-Age=3600; Path=/; Secure; HttpOnly');
+
+$response->getBody()->write('<!DOCTYPE html><html>...</html>');
+$response = $response->withHeader('Content-Length', (string)$response->getBody()->getSize());
+
+echo $response; /* [HTTP/1.1 200 OK\r\nContet-Type: text/html; charset=utf-8...] */
+```
+
+You can also create a new response instance from string:
+
+```php
+<?php
+
+use Dionchaika\Http\Request;
+
+$message = "";
+
+$message .= "HTTP/1.1 200 OK\r\n";
+$message .= "Contet-Type: text/html; charset=utf-8\r\n";
+$message .= "Set-Cookie: foo=bar; Max-Age=3600; Path=/; Secure; HttpOnly\r\n";
+$message .= "Set-Cookie: baz=bat; Max-Age=3600; Path=/; Secure; HttpOnly\r\n";
+$message .= "\r\n";
+$message .= "<!DOCTYPE html><html>...</html>";
+
+$response = Response::createFromString($message);
+```

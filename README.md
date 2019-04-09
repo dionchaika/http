@@ -75,5 +75,4 @@ $message .= "Accept: text/html; charset=utf-8\r\n";
 $message .= "\r\n";
 
 $request = Request::createFromString($message);
-
 ```

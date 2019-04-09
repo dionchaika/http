@@ -16,34 +16,37 @@ composer require dionchaika/http:dev-master
 require_once 'vendor/autoload.php';
 ```
 
-## HTTP-message classes
+## Message classes
+
+### 1. Uri
 ```php
 <?php
 
 use Dionchaika\Http\Uri;
-use Dionchaika\Http\Stream;
-use Dionchaika\Http\Request;
-use Dionchaika\Http\Response;
-use Dionchaika\Http\UploadedFile;
-use Dionchaika\Http\ServerRequest;
 
-/* URI usage example */
-$uri = (new Uri('http://example.com/'))
-    ->withQuery('foo=bar&baz=bat');
+$uri = new Uri('http://user:password@example.com:8080/index.php?foo=bar&baz=bat#hash');
 
+$scheme = $uri->getScheme(); /* http */
+$authority = $uri->getAuthority(); /* user:password@example.com:8080 */
+$userInfo = $uri->getUserInfo(); /* user:password */
+$host = $uri->getHost(); /* example.com */
+$port = $uri->getPort(); /* 8080 */
+$path = $uri->getPath(); /* /index.php */
+$query = $uri->getQuery(); /* foo=bar&baz=bat */
+$fragment = $uri->getFragment(); /* hash */
 
-/* Stream usage example */
-$stream = new Stream('Hello, World!');
-echo $stream;
+$uri = (new Uri)
+    ->withScheme('http')
+    ->withUserInfo('user:password')
+    ->withHost('example.com')
+    ->withPort(8080)
+    ->withPath('/index.php')
+    ->withQuery('foo=bar&baz=bat')
+    ->withFragment('hash');
+```
 
-/* Request usage example */
-$request = new Request('GET', 'http://example.com/')
-    ->withAddedHeader('Cookie', 'foo=bar')
-    ->withAddedHeader('Cookie', 'baz=bat');
+You can also create a URI instance from PHP globals:
 
-/* Response usage example */
-$response = new Response(200, 'OK')
-    ->withAddedHeader('Set-Cookie', 'foo=bar; Max-Age=3600; Path=/; Secure; HttpOnly')
-    ->withAddedHeader('Set-Cookie', 'baz=bat; Max-Age=3600; Path=/; Secure; HttpOnly');
-$response->getBody()->write('Hello, World!');
+```php
+$uri = Uri::createFromGlobals();
 ```

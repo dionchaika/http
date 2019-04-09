@@ -70,9 +70,7 @@ You can also create a new request instance from string:
 
 use Dionchaika\Http\Request;
 
-$message = "";
-
-$message .= "GET /index.php?foo=bar&baz=bat HTTP/1.1\r\n";
+$message = "GET /index.php?foo=bar&baz=bat HTTP/1.1\r\n";
 $message .= "Host: example.com\r\n";
 $message .= "Cookie: foo=bar; baz=bat\r\n";
 $message .= "Accept: text/html; charset=utf-8\r\n";
@@ -105,9 +103,7 @@ You can also create a new response instance from string:
 
 use Dionchaika\Http\Request;
 
-$message = "";
-
-$message .= "HTTP/1.1 200 OK\r\n";
+$message = "HTTP/1.1 200 OK\r\n";
 $message .= "Contet-Type: text/html; charset=utf-8\r\n";
 $message .= "Set-Cookie: foo=bar; Max-Age=3600; Path=/; Secure; HttpOnly\r\n";
 $message .= "Set-Cookie: baz=bat; Max-Age=3600; Path=/; Secure; HttpOnly\r\n";

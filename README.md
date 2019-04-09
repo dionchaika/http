@@ -56,7 +56,7 @@ use Dionchaika\Http\Request;
 
 $request = (new Request('GET', 'http://example.com/index.php?foo=bar&baz=bat'))
     ->withHeader('Cookie', ['foo=bar', 'baz=bat'])
-    ->withHeader('Content-Type', 'text/html; charset=utf-8');
+    ->withHeader('Accept', 'text/html; charset=utf-8');
 ```
 
 You can also create a new request instance from string:
@@ -71,7 +71,7 @@ $message = "";
 $message .= "GET /index.php?foo=bar&baz=bat HTTP/1.1\r\n";
 $message .= "Host: example.com\r\n";
 $message .= "Cookie: foo=bar; baz=bat\r\n";
-$message .= "Content-Type: text/html; charset=utf-8\r\n";
+$message .= "Accept: text/html; charset=utf-8\r\n";
 $message .= "\r\n";
 
 $request = Request::createFromString($message);

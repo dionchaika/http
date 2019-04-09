@@ -52,9 +52,15 @@ use Dionchaika\Http\ServerRequest;
 use Dionchaika\Http\RequestHandler;
 use Dionchaika\Http\Emitter\Emitter;
 
-$handler = new RequestHandler(function ($request) {
-    /* [fallback handler code] */
-});
+use App\Handler\NotFoundHandler;
+use App\Middleware\CsrfMiddleware;
+use App\Middleware\AuthMiddleware;
+use App\Middleware\RoutingMiddleware;
+
+$handler = (new RequestHandler(new NotFoundHandler))
+    ->add(new CsrfMiddleware)
+    ->add(new AuthMiddleware)
+    ->add(new RoutingMiddleware);
 
 $response = $handler->handle(
     ServerRequest::createFromGlobals()

@@ -35,12 +35,6 @@ $httpFactory = new HttpFactory;
 $response = $clinet->sendRequest(
     $httpFactory->createRequest('GET', 'https://github.com/');
 );
-
-if (200 === $response->getStatusCode()) {
-    // [some code]
-}
-
-// [some code]
 ```
 
 For server side requests:
@@ -68,4 +62,18 @@ $response = $handler->handle(
 
 Emitter::emit($response);
 
+```
+
+Using cookie:
+
+```php
+<?php
+
+use Dionchaika\Http\Response;
+use Dionchaika\Http\Cookie\Cookie;
+
+$cookie = Cookie::create('foo', 'bar', time() + 3600, '.example.com', '/', true, true, 'Strict');
+
+$response = (new Response)
+    ->withAddedHeader('Set-Cookie', (string)$cookie);
 ```

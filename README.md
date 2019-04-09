@@ -164,6 +164,8 @@ $request = (new ServerRequest('GET', 'http://example.com/index.php?foo=bar&baz=b
 
 $user = $request->getQueryParams()['user']; /* Returns $_GET['user'] if set */
 $password = $request->getQueryParams()['password']; /* Returns $_GET['password'] if set */
+
+$request->getUploadedFiles()['photo']->moveTo('/path/to/uploaded/files');
 ```
 
 You can also create a new server request instance from PHP globals:
@@ -174,20 +176,4 @@ You can also create a new server request instance from PHP globals:
 use Dionchaika\Http\ServerRequest;
 
 $request = ServerRequest::createFromGlobals();
-
-/* ... */
-
-switch ($request->getUri()->getPath()) {
-    case '/':
-        /* ... */
-        break;
-    case '/about':
-        /* ... */
-        break;
-    case '/contact':
-        /* ... */
-        break;
-}
-
-/* ... */
 ```

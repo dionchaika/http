@@ -72,7 +72,7 @@ Using cookie:
 use Dionchaika\Http\Response;
 use Dionchaika\Http\Cookie\Cookie;
 
-$cookie = Cookie::create('foo', 'bar', time() + 3600, '.example.com', '/', true, true, 'Strict');
+$cookie = Cookie::create('foo', 'bar', time() + 3600, '.example.com', '/', true, true, Cookie::SAME_SITE_STRICT);
 
 $response = (new Response)
     ->withAddedHeader('Set-Cookie', (string)$cookie);

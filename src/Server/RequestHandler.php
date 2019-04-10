@@ -39,10 +39,7 @@ class RequestHandler implements RequestHandlerInterface
      * @param \Psr\Http\Server\RequestHandlerInterface|\Closure|string $fallbackHandler
      * @param array $middleware
      */
-    public function __construct(
-        RequestHandlerInterface $fallbackHandler,
-        array $middleware = []
-    ) {
+    public function __construct($fallbackHandler, array $middleware = []) {
         $this->fallbackHandler = $fallbackHandler;
         $this->middleware = $middleware;
     }

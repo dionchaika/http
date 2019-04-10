@@ -9,7 +9,7 @@
  * @author Dion Chaika <dionchaika@gmail.com>
  */
 
-namespace Dionchaika\Http;
+namespace Dionchaika\Http\Server;
 
 use Closure;
 use RuntimeException;
@@ -29,14 +29,14 @@ class RequestHandler implements RequestHandlerInterface
     protected $middleware = [];
 
     /**
-     * The request fallback handler.
+     * The fallback request handler.
      *
-     * @var \Psr\Http\Server\RequestHandlerInterface
+     * @var \Psr\Http\Server\RequestHandlerInterface|\Closure|string
      */
     protected $fallbackHandler;
 
     /**
-     * @param \Psr\Http\Server\RequestHandlerInterface $fallbackHandler
+     * @param \Psr\Http\Server\RequestHandlerInterface|\Closure|string $fallbackHandler
      * @param array $middleware
      */
     public function __construct(
@@ -51,7 +51,7 @@ class RequestHandler implements RequestHandlerInterface
      * Add a new middleware.
      *
      * @param \Psr\Http\Server\MiddlewareInterface|\Closure|string $middleware
-     * @return \Psr\Http\Server\RequestHandlerInterface
+     * @return $this
      */
     public function add($middleware): RequestHandlerInterface
     {
@@ -69,7 +69,24 @@ class RequestHandler implements RequestHandlerInterface
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
         if (0 === count($this->middleware)) {
-            return $this->fallbackHandler->handle($request);
+            $fallbackHandler = $this->fallbackHandler;
+
+            if ($fallbackHandler instanceof Closure) {
+                return $fallbackHandler($request);
+            } else if ($fallbackHandler instanceof RequestHandlerInterface) {
+                return $this->fallbackHandler->handle($request);
+            } else if (is_string($fallbackHandler) && class_exists($fallbackHandler)) {
+                $fallbackHandler = new $fallbackHandler;
+                if (method_exists($fallbackHandler, ['handle'])) {
+                    return $this->fallbackHandler->handle($request);
+                }
+            }
+
+            throw new RuntimeException(
+                'Invalid fallback handler! '
+                .'Fallback handler must be an instance of \\Closure '
+                .'or an instance of \\Psr\\Http\\Server\\MiddlewareInterface'
+            );
         }
 
         $middleware = array_shift($this->middleware);
@@ -86,9 +103,9 @@ class RequestHandler implements RequestHandlerInterface
         }
 
         throw new RuntimeException(
-            'Invalid middleware!'
-            .' Middleware must be an instance of \\Closure'
-            .' or an instance of \\Psr\\Http\\Server\\MiddlewareInterface'
+            'Invalid middleware! '
+            .'Middleware must be an instance of \\Closure '
+            .'or an instance of \\Psr\\Http\\Server\\MiddlewareInterface'
         );
     }
 }

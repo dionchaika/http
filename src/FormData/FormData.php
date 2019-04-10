@@ -76,7 +76,7 @@ class FormData
      * @param mixed $value
      * @param string|null $filename
      * @param array $headers
-     * @return \Dionchaika\Http\FormData\FormData
+     * @return $this
      * @throws \InvalidArgumentException
      */
     public function append(

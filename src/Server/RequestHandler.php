@@ -74,11 +74,11 @@ class RequestHandler implements RequestHandlerInterface
             if ($fallbackHandler instanceof Closure) {
                 return $fallbackHandler($request);
             } else if ($fallbackHandler instanceof RequestHandlerInterface) {
-                return $this->fallbackHandler->handle($request);
+                return $fallbackHandler->handle($request);
             } else if (is_string($fallbackHandler) && class_exists($fallbackHandler)) {
                 $fallbackHandler = new $fallbackHandler;
                 if (method_exists($fallbackHandler, ['handle'])) {
-                    return $this->fallbackHandler->handle($request);
+                    return $fallbackHandler->handle($request);
                 }
             }
 

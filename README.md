@@ -15,33 +15,3 @@ composer require dionchaika/http:dev-master
 
 require_once 'vendor/autoload.php';
 ```
-
-## HTTP message classes:
-
-### 1. Uri
-```php
-<?php
-
-use Dionchaika\Http\Uri;
-
-$uri = new Uri('http://example.com/index.php?foo=bar&baz=bat');
-
-$scheme = $uri->getScheme(); /* [http] */
-$host = $uri->getHost(); /* [example.com] */
-$path = $uri->getPath(); /* [/index.php] */
-$query = $uri->getQuery(); /* [foo=bar&baz=bat] */
-
-$uri = (new Uri)
-    ->withScheme('http')
-    ->withHost('example.com')
-    ->withPath('/index.php')
-    ->withQuery('foo=bar&baz=bat');
-
-echo $uri; /* [http://example.com/index.php?foo=bar&baz=bat] */
-```
-
-You can also create a new URI instance from PHP globals:
-
-```php
-$uri = Uri::createFromGlobals();
-```

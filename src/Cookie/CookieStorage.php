@@ -36,6 +36,7 @@ class CookieStorage
      * @param \Psr\Http\Message\RequestInterface $request
      * @param \Psr\Http\Message\ResponseInterface $response
      * @return void
+     * @throws \InvalidArgumentException
      */
     public function storeCookies(
         RequestInterface $request,

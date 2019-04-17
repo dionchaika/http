@@ -57,11 +57,8 @@ class CookieStorage
             try {
                 $cookie = Cookie::createFromString($setCookie);
 
-                $cookieDomain = $cookie->getDomain();
-                $cookiePath = $cookie->getPath();
-                $cookieName = $cookie->getName();
+                //
 
-                $this->cookies[$cookieDomain][$cookiePath][$cookieName] = $cookie;
             } catch (Exception $e) {}
         }
     }

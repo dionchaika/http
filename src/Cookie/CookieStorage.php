@@ -40,6 +40,14 @@ class CookieStorage
         RequestInterface $request,
         ResponseInterface $response
     ): void {
-        //
+        $requestUri = $request->getUri();
+        $requestHost = $requestUri->getHost();
+        $requestPath = $requestUri->getPath();
+
+        foreach ($request->getHeader('Set-Cookie') as $setCookie) {
+            try {
+                $cookie = Cookie::createFromString($setCookie);
+            } catch (Exception $e) {}
+        }
     }
 }

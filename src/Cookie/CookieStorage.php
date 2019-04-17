@@ -64,7 +64,7 @@ class CookieStorage
 
                 if (null !== $cookie->getMaxAge()) {
                     $persistent = true;
-                    $expiryTime = $cookie->getMaxAge();
+                    $expiryTime = time() + $cookie->getMaxAge();
                 } else if (null !== $cookie->getExpires()) {
                     $persistent = true;
                     $expiryTime = strtotime($cookie->getExpires());

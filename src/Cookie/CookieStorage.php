@@ -118,4 +118,45 @@ class CookieStorage
             } catch (Exception $e) {}
         }
     }
+
+    /**
+     * Clear the cookies.
+     *
+     * @return void
+     */
+    public function clearCookies(): void
+    {
+        $this->cookies = [];
+    }
+
+    /**
+     * Clear the expired cookies.
+     *
+     * @return void
+     */
+    public function clearExpiredCookies(): void
+    {
+        foreach ($this->cookies as $k => $v) {
+            if (
+                $v['persistent'] &&
+                time() >= $v['expiry_time']
+            ) {
+                unset($this->cookies[$k]);
+            }
+        }
+    }
+
+    /**
+     * Clear the session cookies.
+     *
+     * @return void
+     */
+    public function clearSessionCookies(): void
+    {
+        foreach ($this->cookies as $k => $v) {
+            if (!$v['persistent']) {
+                unset($this->cookies[$v]);
+            }
+        }
+    }
 }

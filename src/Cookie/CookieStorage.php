@@ -28,4 +28,18 @@ class CookieStorage
      * @var array
      */
     protected $cookies = [];
+
+    /**
+     * Store cookies.
+     *
+     * @param \Psr\Http\Message\RequestInterface $request
+     * @param \Psr\Http\Message\ResponseInterface $response
+     * @return void
+     */
+    public function storeCookies(
+        RequestInterface $request,
+        ResponseInterface $response
+    ): void {
+        //
+    }
 }

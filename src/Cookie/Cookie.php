@@ -29,7 +29,7 @@ class Cookie
     const SAME_SITE_STRICT = 'Strict';
 
     /**
-     * he cookie name.
+     * The cookie name.
      *
      * @var string
      */

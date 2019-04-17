@@ -91,13 +91,13 @@ class CookieStorage
                 $secureOnly = $cookie->getSecure();
                 $httpOnly = $cookie->getHttpOnly();
 
-                foreach ($this->cookies as $key => $value) {
+                foreach ($this->cookies as $k => $v) {
                     if (
-                        $value['domain'] === $domain &&
-                        $value['path'] === $path &&
-                        $value['name'] === $name
+                        $v['domain'] === $domain &&
+                        $v['path'] === $path &&
+                        $v['name'] === $name
                     ) {
-                        unset($this->cookies[$key]);
+                        unset($this->cookies[$k]);
                     }
                 }
 

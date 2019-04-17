@@ -53,7 +53,7 @@ class CookieStorage
 
         $requestPath = ('' === $requestPath) ? '/' : '/'.ltrim($requestPath);
 
-        foreach ($request->getHeader('Set-Cookie') as $setCookie) {
+        foreach ($response->getHeader('Set-Cookie') as $setCookie) {
             try {
                 $cookie = Cookie::createFromString($setCookie);
 

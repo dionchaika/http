@@ -325,7 +325,7 @@ class Cookie
             }
         }
 
-        if (null !== $attributes['Max-Age'] && null === $attributes['Expires']) {
+        if (null !== $attributes['Max-Age']) {
             $expiryTime = time() + $attributes['Max-Age'];
         } else if (null !== $attributes['Expires']) {
             $expiryTime = $attributes['Expires'];
@@ -865,7 +865,7 @@ class Cookie
      * Update the cookie expiry time.
      *
      * @param string|null $expires
-     * @param int|null    $maxAge
+     * @param int|null $maxAge
      * @return int
      * @throws \RuntimeException
      */

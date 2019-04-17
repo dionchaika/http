@@ -51,7 +51,7 @@ class CookieStorage
             );
         }
 
-        $requestPath = ('' === $requestPath) ? '/' : '/'.ltrim($requestPath);
+        $requestPath = ('' === $requestPath) ? '/' : '/'.ltrim($requestPath, '/');
 
         foreach ($response->getHeader('Set-Cookie') as $setCookie) {
             try {

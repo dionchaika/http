@@ -97,6 +97,7 @@ class CookieStorage
                         $v['path'] === $path &&
                         $v['name'] === $name
                     ) {
+                        $creationTime = $v['creation_time'];
                         unset($this->cookies[$k]);
                     }
                 }

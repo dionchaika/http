@@ -757,7 +757,7 @@ class Cookie
     protected function filterValue(?string $value): ?string
     {
         if (null !== $value) {
-            $unquotedValue = preg_match('/^\".+\"$/', $value) ? trim($value, '"') : $value;
+            $unquotedValue = preg_match('/^\".*\"$/', $value) ? trim($value, '"') : $value;
             if (!preg_match('/^[^\x00-\x1f\x7f\x20,;\\"]*$/', $unquotedValue)) {
                 throw new InvalidArgumentException(
                     'Invalid cookie value! Cookie value must be compliant with the "RFC 6265" standart.'

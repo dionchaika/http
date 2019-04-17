@@ -15,8 +15,7 @@ use RuntimeException;
 use InvalidArgumentException;
 
 /**
- * The HTTP request
- * or HTTP response cookie model.
+ * The cookie model.
  *
  * @see https://tools.ietf.org/html/rfc6265
  */

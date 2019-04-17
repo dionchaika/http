@@ -168,6 +168,12 @@ class CookieStorage
      */
     public function addToRequest(RequestInterface $request): RequestInterface
     {
-        //
+        foreach ($this->cookies as $cookie) {
+            //
+
+            $request = $request->withAddedHeader('Cookie', $name.'='.$value);
+        }
+
+        return $request;
     }
 }

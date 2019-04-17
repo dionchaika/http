@@ -57,8 +57,62 @@ class CookieStorage
             try {
                 $cookie = Cookie::createFromString($setCookie);
 
-                //
+                $name = $cookie->getName();
+                $value = $cookie->getValue();
+                $creationTime = $lastAccessTime = time();
 
+                if (null !== $cookie->getMaxAge()) {
+                    $persistent = true;
+                    $expiryTime = $cookie->getMaxAge();
+                } else if (null !== $cookie->getExpires()) {
+                    $persistent = true;
+                    $expiryTime = strtotime($cookie->getExpires());
+                } else {
+                    $persistent = false;
+                    $expiryTime = 0;
+                }
+
+                $domain = $cookie->getDomain() ?? '';
+                if ('' !== $domain) {
+                    if (!$cookie->isMatchesDomain($requestHost)) {
+                        continue;
+                    }
+
+                    $hostOnly = false;
+                } else {
+                    $hostOnly = true;
+                    $domain = $requestHost;
+                }
+
+                $path = $cookie->getPath();
+                $path = (null === $path || '/' === $path) ? $requestPath : $path;
+
+                $secureOnly = $cookie->getSecure();
+                $httpOnly = $cookie->getHttpOnly();
+
+                foreach ($this->cookies as $key => $value) {
+                    if (
+                        $value['domain'] === $domain &&
+                        $value['path'] === $path &&
+                        $value['name'] === $name
+                    ) {
+                        unset($this->cookies[$key]);
+                    }
+                }
+
+                $this->cookies[] = [
+                    'name' => $name,
+                    'value' => $value,
+                    'expiry_time' => $expiryTime,
+                    'domain' => $domain,
+                    'path' => $path,
+                    'creation_time' => $creationTime,
+                    'last_access_time' => $lastAccessTime,
+                    'persistent' => $persistent,
+                    'host_only' => $hostOnly,
+                    'secure_only' => $secureOnly,
+                    'http_only' => $httpOnly
+                ];
             } catch (Exception $e) {}
         }
     }

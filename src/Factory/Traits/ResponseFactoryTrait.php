@@ -110,6 +110,41 @@ trait ResponseFactoryTrait
     }
 
     /**
+     * Create a new view response.
+     *
+     * @param string $filename
+     * @param array $params
+     * @param int $code
+     * @param string $reasonPhrase
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws \InvalidArgumentException
+     */
+    public function createViewResponse(string $filename, array $params = [], int $code = 200, string $reasonPhrase = ''): ResponseInterface
+    {
+        if (!is_file($filename)) {
+            throw new InvalidArgumentException(
+                'File does not exists: '.$filename.'!'
+            );
+        }
+
+        extract($params);
+
+        ob_start();
+        require $filename;
+        $view = ob_get_clean();
+
+        $html = preg_replace_callback('/\{\{\s*([^\s{}]+)\s*\}\}/', function ($matches) use ($params) {
+            if (isset($params[$matches[1]])) {
+                return $params[$matches[1]];
+            }
+
+            return $matches[0];
+        }, $view);
+
+        return $this->createHtmlResponse($html, $code, $reasonPhrase);
+    }
+
+    /**
      * Create a new file response.
      *
      * @param string $filename

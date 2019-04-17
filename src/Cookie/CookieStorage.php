@@ -12,6 +12,7 @@
 namespace Dionchaika\Http\Cookie;
 
 use Exception;
+use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -44,9 +45,23 @@ class CookieStorage
         $requestHost = $requestUri->getHost();
         $requestPath = $requestUri->getPath();
 
+        if ('' === $requestHost) {
+            throw new InvalidArgumentException(
+                'Invalid request! Host is not defined.'
+            );
+        }
+
+        $requestPath = ('' === $requestPath) ? '/' : '/'.ltrim($requestPath);
+
         foreach ($request->getHeader('Set-Cookie') as $setCookie) {
             try {
                 $cookie = Cookie::createFromString($setCookie);
+
+                $cookieDomain = $cookie->getDomain();
+                $cookiePath = $cookie->getPath();
+                $cookieName = $cookie->getName();
+
+                $this->cookies[$cookieDomain][$cookiePath][$cookieName] = $cookie;
             } catch (Exception $e) {}
         }
     }

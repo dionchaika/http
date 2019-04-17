@@ -120,7 +120,7 @@ class CookieStorage
     }
 
     /**
-     * Clear the cookies.
+     * Clear cookies.
      *
      * @return void
      */
@@ -130,7 +130,7 @@ class CookieStorage
     }
 
     /**
-     * Clear the expired cookies.
+     * Clear expired cookies.
      *
      * @return void
      */
@@ -147,7 +147,7 @@ class CookieStorage
     }
 
     /**
-     * Clear the session cookies.
+     * Clear session cookies.
      *
      * @return void
      */
@@ -158,5 +158,16 @@ class CookieStorage
                 unset($this->cookies[$v]);
             }
         }
+    }
+
+    /**
+     * Add cookies to request.
+     *
+     * @param \Psr\Http\Message\RequestInterface $request
+     * @return \Psr\Http\Message\RequestInterface
+     */
+    public function addToRequest(RequestInterface $request): RequestInterface
+    {
+        //
     }
 }

@@ -14,6 +14,12 @@ namespace Dionchaika\Http\Cookie;
 use RuntimeException;
 use InvalidArgumentException;
 
+/**
+ * The HTTP request
+ * or HTTP response cookie model.
+ *
+ * @see https://tools.ietf.org/html/rfc6265
+ */
 class Cookie
 {
     /**
@@ -136,10 +142,10 @@ class Cookie
         bool $httpOnly = false,
         ?string $sameSite = null
     ) {
-        if (0 === strncmp('__Host-', $name, 7)) {
+        if (0 === strpos('__Host-', $name)) {
             $name = substr($name, 7);
             $this->hasHostPrefix = true;
-        } else if (0 === strncmp('__Secure-', $name, 9)) {
+        } else if (0 === strpos('__Secure-', $name)) {
             $name = substr($name, 9);
             $this->hasSecurePrefix = true;
         }
@@ -318,7 +324,7 @@ class Cookie
         }
 
         if (null !== $attributes['Max-Age']) {
-            if (preg_match('/^\d+$/', $attributes['Max-Age'])) {
+            if (preg_match('/^\-?\d+$/', $attributes['Max-Age'])) {
                 $attributes['Max-Age'] = (int)$attributes['Max-Age'];
             } else {
                 $attributes['Max-Age'] = null;
@@ -833,7 +839,7 @@ class Cookie
                 );
             }
 
-            if ('' === $path || 0 !== strncmp($path, '/', 1)) {
+            if ('' === $path || 0 !== strpos($path, '/')) {
                 return '/';
             }
         }

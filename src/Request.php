@@ -109,7 +109,12 @@ class Request extends Message implements RequestInterface
             $headerParts = explode(':', $header, 2);
 
             $headerName = $headerParts[0];
-            $headerValues = array_map('trim', explode(',', $headerParts[1]));
+
+            if ('cookie' === strtolower($headerName)) {
+                $headerValues = array_map('trim', explode(';', $headerParts[1]));
+            } else {
+                $headerValues = array_map('trim', explode(',', $headerParts[1]));
+            }
 
             $request = $request->withAddedHeader($headerName, $headerValues);
         }

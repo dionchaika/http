@@ -168,11 +168,9 @@ class CookieStorage
      */
     public function addToRequest(RequestInterface $request): RequestInterface
     {
-        foreach ($this->cookies as $cookie) {
-            //
+        $this->clearExpiredCookies();
 
-            $request = $request->withAddedHeader('Cookie', $name.'='.$value);
-        }
+        //
 
         return $request;
     }

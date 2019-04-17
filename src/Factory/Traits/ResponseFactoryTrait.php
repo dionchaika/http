@@ -13,8 +13,8 @@ namespace Dionchaika\Http\Factory\Traits;
 
 use InvalidArgumentException;
 use Dionchaika\Http\Response;
+use Dionchaika\Http\Utils\XmlBuilder;
 use Psr\Http\Message\ResponseInterface;
-use Dionchaika\Http\XmlBuilder\XmlBuilder;
 
 trait ResponseFactoryTrait
 {

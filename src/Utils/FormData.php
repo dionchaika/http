@@ -9,7 +9,7 @@
  * @author Dion Chaika <dionchaika@gmail.com>
  */
 
-namespace Dionchaika\Http\FormData;
+namespace Dionchaika\Http\Utils;
 
 use InvalidArgumentException;
 

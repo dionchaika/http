@@ -9,7 +9,7 @@
  * @author Dion Chaika <dionchaika@gmail.com>
  */
 
-namespace Dionchaika\Http\XmlBuilder;
+namespace Dionchaika\Http\Utils;
 
 class XmlBuilder
 {

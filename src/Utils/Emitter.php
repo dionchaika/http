@@ -9,7 +9,7 @@
  * @author Dion Chaika <dionchaika@gmail.com>
  */
 
-namespace Dionchaika\Http\Emitter;
+namespace Dionchaika\Http\Utils;
 
 use RuntimeException;
 use Psr\Http\Message\ResponseInterface;

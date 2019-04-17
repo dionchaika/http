@@ -14,8 +14,8 @@ namespace Dionchaika\Http\Factory\Traits;
 use Dionchaika\Http\Request;
 use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
-use Dionchaika\Http\FormData\FormData;
-use Dionchaika\Http\XmlBuilder\XmlBuilder;
+use Dionchaika\Http\Utils\FormData;
+use Dionchaika\Http\Utils\XmlBuilder;
 
 trait RequestFactoryTrait
 {
@@ -146,7 +146,7 @@ trait RequestFactoryTrait
      *
      * @param string $method
      * @param \Psr\Http\Message\UriInterface|string $uri
-     * @param \Dionchaika\Http\FormData\FormData $formData
+     * @param \Dionchaika\Http\Utils\FormData $formData
      * @return \Psr\Http\Message\RequestInterface
      * @throws \InvalidArgumentException
      */

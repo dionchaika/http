@@ -84,13 +84,13 @@ class Uri implements UriInterface
                 );
             }
 
-            $scheme = !empty($uriParts['scheme']) ? $uriParts['scheme'] : '';
-            $user = !empty($uriParts['user']) ? $uriParts['user'] : '';
-            $password = !empty($uriParts['pass']) ? $uriParts['pass'] : null;
-            $host = !empty($uriParts['host']) ? $uriParts['host'] : '';
-            $port = !empty($uriParts['port']) ? $uriParts['port'] : null;
-            $path = !empty($uriParts['path']) ? $uriParts['path'] : '';
-            $query = !empty($uriParts['query']) ? $uriParts['query'] : '';
+            $scheme   = !empty($uriParts['scheme'])   ? $uriParts['scheme']   : '';
+            $user     = !empty($uriParts['user'])     ? $uriParts['user']     : '';
+            $password = !empty($uriParts['pass'])     ? $uriParts['pass']     : null;
+            $host     = !empty($uriParts['host'])     ? $uriParts['host']     : '';
+            $port     = !empty($uriParts['port'])     ? $uriParts['port']     : null;
+            $path     = !empty($uriParts['path'])     ? $uriParts['path']     : '';
+            $query    = !empty($uriParts['query'])    ? $uriParts['query']    : '';
             $fragment = !empty($uriParts['fragment']) ? $uriParts['fragment'] : '';
 
             $userInfo = $user;
@@ -98,12 +98,12 @@ class Uri implements UriInterface
                 $userInfo .= ':'.$password;
             }
 
-            $this->scheme = $this->filterScheme($scheme);
+            $this->scheme   = $this->filterScheme($scheme);
             $this->userInfo = $userInfo;
-            $this->host = $this->filterHost($host);
-            $this->port = $this->filterPort($port);
-            $this->path = $this->filterPath($path);
-            $this->query = $this->filterQuery($query);
+            $this->host     = $this->filterHost($host);
+            $this->port     = $this->filterPort($port);
+            $this->path     = $this->filterPath($path);
+            $this->query    = $this->filterQuery($query);
             $this->fragment = $this->filterFragment($fragment);
         }
     }

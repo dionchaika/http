@@ -116,7 +116,7 @@ class Uri implements UriInterface
      */
     public static function createFromGlobals()
     {
-        $isSecured = !empty($_SERVER['HTTPS']) && 'off' !== strtolower($_SERVER['HTTPS']);
+        $isSecured = !empty($_SERVER['HTTPS']) && 0 !== strcasecmp($_SERVER['HTTPS'], 'off');
 
         $scheme = $isSecured ? 'https' : 'http';
         $host = !empty($_SERVER['SERVER_NAME']) ? $_SERVER['SERVER_NAME'] : (!empty($_SERVER['SERVER_ADDR']) ? $_SERVER['SERVER_ADDR'] : '127.0.0.1');

@@ -308,10 +308,8 @@ class _Client implements ClientInterface
         $this->debugResponse($response);
 
         if (
-            (
-                201 === $response->getStatusCode() ||
-                (300 < $response->getStatusCode() && 400 > $response->getStatusCode())
-            ) && $response->hasHeader('Location') &&
+            (201 === $response->getStatusCode() || (300 < $response->getStatusCode() && 400 > $response->getStatusCode())) &&
+            $response->hasHeader('Location') &&
             $this->config['redirects'] &&
             $this->redirectsCount <= $this->config['max_redirects']
         ) {

@@ -277,8 +277,7 @@ class _Client implements ClientInterface
                 'gzip' === $response->getHeaderLine('Content-Encoding') ||
                 'deflate' === $response->getHeaderLine('Content-Encoding') ||
                 'compress' === $response->getHeaderLine('Content-Encoding')
-            ) &&
-            $this->config['decode_body']
+            ) && $this->config['decode_body']
         ) {
             switch ($response->getHeaderLine('Content-Encoding')) {
                 case 'gzip':

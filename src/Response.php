@@ -168,7 +168,11 @@ class Response extends Message implements ResponseInterface
             $headerParts = explode(':', $header, 2);
 
             $headerName = $headerParts[0];
-            $headerValues = array_map('trim', explode(',', $headerParts[1]));
+            if ('set-cookie' === strtolower($headerName)) {
+                $headerValues = $headerParts[1];
+            } else {
+                $headerValues = array_map('trim', explode(',', $headerParts[1]));
+            }
 
             $response = $response->withAddedHeader($headerName, $headerValues);
         }

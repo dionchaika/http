@@ -379,6 +379,8 @@ class _Client implements ClientInterface
 
         $response = Response::createFromString($response);
 
+        print_r($response); die;
+
         if ($this->config['cookies']) {
             foreach ($response->getHeader('Set-Cookie') as $setCookie) {
                 try {

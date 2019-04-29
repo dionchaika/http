@@ -34,6 +34,7 @@ class _Client implements ClientInterface
         'redirects'           => false,
         'max_redirects'       => 10,
         'strict_redirects'    => true,
+        'redirects_schemes'   => ['http', 'https'],
         'referer_header'      => true,
         'redirects_history'   => true,
         'receive_body'        => true,
@@ -74,6 +75,7 @@ class _Client implements ClientInterface
         }
 
         if (
+            $this->config['cookies'] &&
             null !== $this->config['cookies_file'] &&
             file_exists($this->config['cookies_file'])
         ) {
@@ -176,6 +178,10 @@ class _Client implements ClientInterface
 
         if (isset($config['strict_redirects']) && is_bool($config['strict_redirects'])) {
             $this->config['strict_redirects'] = $config['strict_redirects'];
+        }
+
+        if (isset($config['redirects_schemes']) && is_array($config['redirects_schemes'])) {
+            $this->config['redirects_schemes'] = $config['redirects_schemes'];
         }
 
         if (isset($config['referer_header']) && is_bool($config['referer_header'])) {
@@ -489,25 +495,27 @@ class _Client implements ClientInterface
                 $redirectUri = $redirectUri->withHost($request->getUri()->getHost());
             }
 
-            if ($this->config['redirects_history']) {
-                $this->redirectsHistory[] = [
-                    'uri' => $redirectUri,
-                    'headers' => $response->getHeaders()
-                ];
+            if (in_array($redirectUri->getScheme(), $this->config['redirects_schemes'])) {
+                if ($this->config['redirects_history']) {
+                    $this->redirectsHistory[] = [
+                        'uri' => $redirectUri,
+                        'headers' => $response->getHeaders()
+                    ];
+                }
+    
+                if ($this->config['referer_header']) {
+                    $request = $request->withHeader('Referer', (string)$request->getUri());
+                }
+    
+                ++$this->redirectsCount;
+    
+                $response = $this->sendRequest($request->withUri($redirectUri));
             }
-
-            if ($this->config['referer_header']) {
-                $request = $request->withHeader('Referer', (string)$request->getUri());
-            }
-
-            ++$this->redirectsCount;
-
-            $response = $this->sendRequest($request->withUri($redirectUri));
         } else {
             $this->redirectsCount = 0;
         }
 
-        if (null !== $this->config['cookies_file']) {
+        if ($this->config['cookies'] && null !== $this->config['cookies_file']) {
             try {
                 file_put_contents(
                     $this->config['cookies_file'], serialize($this->cookies)

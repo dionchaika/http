@@ -56,8 +56,8 @@ class Client implements ClientInterface
     ];
 
     /**
-     * The array of
-     * client cookies.
+     * The array
+     * of client cookies.
      *
      * @var \Dionchaika\Http\Cookie\Cookie[]
      */
@@ -78,7 +78,7 @@ class Client implements ClientInterface
     protected $redirectsHistory = [];
 
     /**
-     * Allowed config options:
+     * Allowed client config options:
      *
      *      1.  headers (array, default: empty) - the array of additional request headers.
      *              <code>
@@ -138,22 +138,29 @@ class Client implements ClientInterface
                 );
             }
 
-            $cookies = file_get_contents($this->config['cookies_file']);
-            if (false === $cookies) {
+            $contents = file_get_contents($this->config['cookies_file']);
+            if (false === $contents) {
                 throw new RuntimeException(
                     'Unable to get the contents of the file: '.$this->config['cookies_file'].'!'
                 );
             }
 
-            $this->cookies = unserialize(
-                file_get_contents($this->config['cookies_file'])
-            );
+            $cookies = unserialize($contents);
+            if (false === $cookies) {
+                throw new RuntimeException(
+                    'Unable to load cookies from the file: '.$this->config['cookies_file'].'!'
+                );
+            }
 
+            $this->cookies = $cookies;
             $this->clearExpiredCookies();
         }
     }
 
     /**
+     * Get the array
+     * of client cookies.
+     *
      * @return \Dionchaika\Http\Cookie\Cookie[]
      */
     public function getCookies(): array
@@ -162,6 +169,8 @@ class Client implements ClientInterface
     }
 
     /**
+     * Clear cookies.
+     *
      * @return void
      */
     public function clearCookies(): void
@@ -170,6 +179,8 @@ class Client implements ClientInterface
     }
 
     /**
+     * Clear expired cookies.
+     *
      * @return void
      */
     public function clearExpiredCookies(): void
@@ -182,6 +193,8 @@ class Client implements ClientInterface
     }
 
     /**
+     * Clear session cookies.
+     *
      * @return void
      */
     public function clearSessionCookies(): void
@@ -197,6 +210,8 @@ class Client implements ClientInterface
     }
 
     /**
+     * Get redirects history.
+     *
      * @return mixed[]
      */
     public function getRedirectsHistory(): array
@@ -205,6 +220,8 @@ class Client implements ClientInterface
     }
 
     /**
+     * Clear redirects history.
+     *
      * @return void
      */
     public function clearRedirectsHistory(): void
@@ -213,6 +230,9 @@ class Client implements ClientInterface
     }
 
     /**
+     * Set the array
+     * of client config.
+     *
      * @param mixed[] $config
      * @return void
      */
@@ -300,6 +320,8 @@ class Client implements ClientInterface
     }
 
     /**
+     * Send a request and return a response.
+     *
      * @param \Psr\Http\Message\RequestInterface $request
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \Psr\Http\Client\ClientExceptionInterface
@@ -307,28 +329,33 @@ class Client implements ClientInterface
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
         foreach ($this->config['headers'] as $name => $value) {
-            $request = $request->withHeader($name, $value);
+            $request = $request
+                ->withHeader($name, $value);
         }
 
         if ('' === $request->getMethod()) {
-            $request = $request->withMethod('GET');
+            $request = $request
+                ->withMethod('GET');
         }
 
         if ('' === $request->getProtocolVersion()) {
-            $request = $request->withProtocolVersion('1.1');
+            $request = $request
+                ->withProtocolVersion('1.1');
         }
 
         if (
             '1.1' === $request->getProtocolVersion() &&
             !$request->hasHeader('Connection')
         ) {
-            $request = $request->withHeader('Connection', 'close');
+            $request = $request
+                ->withHeader('Connection', 'close');
         }
 
         if ('' === $request->getUri()->getScheme()) {
-            $request = $request->withUri(
-                $request->getUri()->withScheme('https')
-            );
+            $request = $request
+                ->withUri(
+                    $request->getUri()->withScheme('https')
+                );
         }
 
         if ('' === $request->getUri()->getHost()) {
@@ -384,12 +411,9 @@ class Client implements ClientInterface
         $this->debugConnection($remoteSocket);
 
         if ($this->config['cookies']) {
-            foreach ($this->cookies as $key => $value) {
-                if ($value->isExpired()) {
-                    unset($this->cookies[$key]);
-                    continue;
-                }
+            $this->clearExpiredCookies();
 
+            foreach ($this->cookies as $key => $value) {
                 if (!$value->isMatchesDomain($request->getUri()->getHost())) {
                     continue;
                 }
@@ -398,7 +422,8 @@ class Client implements ClientInterface
                     continue;
                 }
 
-                $request = $request->withAddedHeader('Cookie', $value->getNameValuePair());
+                $request = $request
+                    ->withAddedHeader('Cookie', $value->getNameValuePair());
             }
         }
 
@@ -424,7 +449,8 @@ class Client implements ClientInterface
             }
 
             if (!$request->hasHeader('Content-Length')) {
-                $request = $request->withHeader('Content-Length', (string)$$request->getBody()->getSize());
+                $request = $request
+                    ->withHeader('Content-Length', (string)$$request->getBody()->getSize());
             }
         }
 
@@ -464,7 +490,11 @@ class Client implements ClientInterface
             );
         }
 
-        $response = Response::createFromString($response);
+        try {
+            $response = Response::createFromString($response);
+        } catch (InvalidArgumentException $e) {
+            throw new ClientException($request, $e->getMessage());
+        }
 
         if ($this->config['cookies']) {
             foreach ($response->getHeader('Set-Cookie') as $setCookie) {
@@ -504,10 +534,12 @@ class Client implements ClientInterface
 
             $size = $response->getBody()->getSize();
             if (null !== $size && 0 !== $size) {
-                $response = $response->withHeader('Content-Length', (string)$size);
+                $response = $response
+                    ->withHeader('Content-Length', (string)$size);
             }
 
-            $response = $response->withoutHeader('Transfer-Encoding');
+            $response = $response
+                ->withoutHeader('Transfer-Encoding');
         }
 
         if (
@@ -519,28 +551,33 @@ class Client implements ClientInterface
         ) {
             switch ($response->getHeaderLine('Content-Encoding')) {
                 case 'gzip':
-                    $response = $response->withBody(
-                        new Stream($this->ungzipString((string)$response->getBody()))
-                    );
+                    $response = $response
+                        ->withBody(
+                            new Stream($this->ungzipString((string)$response->getBody()))
+                        );
                     break;
                 case 'deflate':
-                    $response = $response->withBody(
-                        new Stream($this->undeflateString((string)$response->getBody()))
-                    );
+                    $response = $response
+                        ->withBody(
+                            new Stream($this->undeflateString((string)$response->getBody()))
+                        );
                     break;
                 case 'compress':
-                    $response = $response->withBody(
-                        new Stream($this->uncompressString((string)$response->getBody()))
-                    );
+                    $response = $response
+                        ->withBody(
+                            new Stream($this->uncompressString((string)$response->getBody()))
+                        );
                     break;
             }
 
             $size = $response->getBody()->getSize();
             if (null !== $size && 0 !== $size) {
-                $response = $response->withHeader('Content-Length', (string)$size);
+                $response = $response
+                    ->withHeader('Content-Length', (string)$size);
             }
 
-            $response = $response->withoutHeader('Content-Encoding');
+            $response = $response
+                ->withoutHeader('Content-Encoding');
         }
 
         $this->debugResponse($response);
@@ -562,7 +599,8 @@ class Client implements ClientInterface
 
             $redirectUri = new Uri($response->getHeaderLine('Location'));
             if ('' === $redirectUri->getHost()) {
-                $redirectUri = $redirectUri->withHost($request->getUri()->getHost());
+                $redirectUri = $redirectUri
+                    ->withHost($request->getUri()->getHost());
             }
 
             if (in_array($redirectUri->getScheme(), $this->config['redirects_schemes'])) {
@@ -574,7 +612,8 @@ class Client implements ClientInterface
                 }
     
                 if ($this->config['referer_header']) {
-                    $request = $request->withHeader('Referer', (string)$request->getUri());
+                    $request = $request
+                        ->withHeader('Referer', (string)$request->getUri());
                 }
     
                 ++$this->redirectsCount;
@@ -585,7 +624,10 @@ class Client implements ClientInterface
             $this->redirectsCount = 0;
         }
 
-        if ($this->config['cookies'] && null !== $this->config['cookies_file']) {
+        if (
+            $this->config['cookies'] &&
+            null !== $this->config['cookies_file']
+        ) {
             try {
                 file_put_contents(
                     $this->config['cookies_file'], serialize($this->cookies)
@@ -597,6 +639,8 @@ class Client implements ClientInterface
     }
 
     /**
+     * Debug connection info.
+     *
      * @param string $remoteSocket
      * @return void
      */
@@ -615,6 +659,8 @@ class Client implements ClientInterface
     }
 
     /**
+     * Debug request info.
+     *
      * @param \Psr\Http\Message\RequestInterface $request
      * @return void
      */
@@ -663,6 +709,8 @@ class Client implements ClientInterface
     }
 
     /**
+     * Debug response info.
+     *
      * @param \Psr\Http\Message\ResponseInterface $response
      * @return void
      */
@@ -711,6 +759,8 @@ class Client implements ClientInterface
     }
 
     /**
+     * Unchunk a string.
+     *
      * @param string $string
      * @return string
      */
@@ -748,6 +798,8 @@ class Client implements ClientInterface
     }
 
     /**
+     * Decode a gzip encoded string.
+     *
      * @param string $string
      * @return string
      */
@@ -757,6 +809,8 @@ class Client implements ClientInterface
     }
 
     /**
+     * Decode a deflate encoded string.
+     *
      * @param string $string
      * @return string
      */
@@ -766,6 +820,8 @@ class Client implements ClientInterface
     }
 
     /**
+     * Decode a compress encoded string.
+     *
      * @param string $string
      * @return string
      */

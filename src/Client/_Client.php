@@ -537,7 +537,7 @@ class _Client implements ClientInterface
     protected function debugConnection(string $remoteSocket): void
     {
         if ($this->config['debug']) {
-            $message = "|| *  {$remoteSocket}\r\n|| \r\n";
+            $message = "|| *  {$remoteSocket}\r\n||\r\n";
             if (null !== $this->config['debug_file']) {
                 try {
                     file_put_contents($this->config['debug_file'], $message, \FILE_APPEND);
@@ -563,7 +563,28 @@ class _Client implements ClientInterface
                 $message .= "|| -> {$line}\r\n";
             }
 
-            $message .= "|| \r\n";
+            $message .= "|| ->\r\n";
+
+            if (
+                null !== $request->getBody()->getSize() &&
+                0 !== $request->getBody()->getSize()
+            ) {
+                if ($this->config['debug_request_body'] && isset($requestParts[1])) {
+                    $message .= "|| -> [BEGIN BODY]\r\n";
+                    $message .= "{$requestParts[1]}\r\n";
+                    $message .= "|| -> [END BODY]\r\n";
+                } else {
+                    if (1 === $request->getBody()->getSize()) {
+                        $unit = 'BYTE';
+                    } else {
+                        $unit = 'BYTES';
+                    }
+
+                    $message .= "|| -> [{$request->getBody()->getSize()} {$unit} OF BODY]\r\n";
+                }
+            }
+
+            $message .= "||\r\n";
 
             if (null !== $this->config['debug_file']) {
                 try {
@@ -590,7 +611,28 @@ class _Client implements ClientInterface
                 $message .= "|| <- {$line}\r\n";
             }
 
-            $message .= "|| <- \r\n\r\n";
+            $message .= "|| <-\r\n";
+
+            if (
+                null !== $response->getBody()->getSize() &&
+                0 !== $response->getBody()->getSize()
+            ) {
+                if ($this->config['debug_response_body'] && isset($responseParts[1])) {
+                    $message .= "|| <- [BEGIN BODY]\r\n";
+                    $message .= "{$responseParts[1]}\r\n";
+                    $message .= "|| <- [END BODY]\r\n";
+                } else {
+                    if (1 === $response->getBody()->getSize()) {
+                        $unit = 'BYTE';
+                    } else {
+                        $unit = 'BYTES';
+                    }
+
+                    $message .= "|| <- [{$response->getBody()->getSize()} {$unit} OF BODY]\r\n";
+                }
+            }
+
+            $message .= "\r\n";
 
             if (null !== $this->config['debug_file']) {
                 try {

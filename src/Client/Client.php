@@ -100,7 +100,7 @@ class Client implements ClientInterface
      *      9.  referer_header (bool, default: true) - add a "Referer" header to redirect requests.
      *      10. redirects_history (bool, default: true) - store redirect requests URI and headers.
      *              <code>
-     *                  // Get redirect request host and headers:
+     *                  // Get the redirect request host and headers:
      *                  $host = $client->getRedirectsHistory()[0]['uri']->getHost();
      *                  $headers = $client->getRedirectsHistory()[0]['headers'];
      *              </code>

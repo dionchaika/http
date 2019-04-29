@@ -199,7 +199,6 @@ class _Client implements ClientInterface
 
         $this->debugRequest($request);
 
-        $response = '';
         if ($this->config['receive_body']) {
             $response = stream_get_contents($socket);
             if (false === $response) {
@@ -209,6 +208,7 @@ class _Client implements ClientInterface
                 );
             }
         } else {
+            $response = '';
             while (!feof($socket)) {
                 $response .= fread($socket, 1);
 

@@ -65,6 +65,158 @@ class _Client implements ClientInterface
     protected $redirectsHistory = [];
 
     /**
+     * @param mixed[] $config
+     */
+    public function __construct(array $config = [])
+    {
+        if (!empty($config)) {
+            $this->setConfig($config);
+        }
+    }
+
+    /**
+     * @return \Dionchaika\Http\Cookie\Cookie[]
+     */
+    public function getCookies(): array
+    {
+        return $this->cookies;
+    }
+
+    /**
+     * @return void
+     */
+    public function clearCookies(): void
+    {
+        $this->cookies = [];
+    }
+
+    /**
+     * @return void
+     */
+    public function clearExpiredCookies(): void
+    {
+        foreach ($this->cookies as $key => $value) {
+            if ($value->isExpired()) {
+                unset($this->cookies[$key]);
+            }
+        }
+    }
+
+    /**
+     * @return void
+     */
+    public function clearSessionCookies(): void
+    {
+        foreach ($this->cookies as $key => $value) {
+            if (
+                null === $value->getExpires() &&
+                null === $value->getMaxAge()
+            ) {
+                unset($this->cookies[$key]);
+            }
+        }
+    }
+
+    /**
+     * @return mixed[]
+     */
+    public function getRedirectsHistory(): array
+    {
+        return $this->redirectsHistory;
+    }
+
+    /**
+     * @return void
+     */
+    public function clearRedirectsHistory(): void
+    {
+        $this->redirectsHistory = [];
+    }
+
+    /**
+     * @param mixed[] $config
+     * @return void
+     */
+    public function setConfig(array $config): void
+    {
+        if (isset($config['headers']) && is_array($config['headers'])) {
+            $this->config['headers'] = $config['headers'];
+        }
+
+        if (isset($config['cookies']) && is_bool($config['cookies'])) {
+            $this->config['cookies'] = $config['cookies'];
+        }
+
+        if (isset($config['cookies_file']) && is_string($config['cookies_file'])) {
+            $this->config['cookies_file'] = $config['cookies_file'];
+        }
+
+        if (isset($config['timeout']) && is_float($config['timeout'])) {
+            $this->config['timeout'] = $config['timeout'];
+        }
+
+        if (isset($config['redirects']) && is_bool($config['redirects'])) {
+            $this->config['redirects'] = $config['redirects'];
+        }
+
+        if (isset($config['max_redirects']) && is_int($config['max_redirects'])) {
+            $this->config['max_redirects'] = $config['max_redirects'];
+        }
+
+        if (isset($config['strict_redirects']) && is_bool($config['strict_redirects'])) {
+            $this->config['strict_redirects'] = $config['strict_redirects'];
+        }
+
+        if (isset($config['referer_header']) && is_bool($config['referer_header'])) {
+            $this->config['referer_header'] = $config['referer_header'];
+        }
+
+        if (isset($config['redirects_history']) && is_bool($config['redirects_history'])) {
+            $this->config['redirects_history'] = $config['redirects_history'];
+        }
+
+        if (isset($config['receive_body']) && is_bool($config['receive_body'])) {
+            $this->config['receive_body'] = $config['receive_body'];
+        }
+
+        if (isset($config['unchunk_body']) && is_bool($config['unchunk_body'])) {
+            $this->config['unchunk_body'] = $config['unchunk_body'];
+        }
+
+        if (isset($config['decode_body']) && is_bool($config['decode_body'])) {
+            $this->config['decode_body'] = $config['decode_body'];
+        }
+
+        if (isset($config['context']) && is_resource($config['context'])) {
+            $this->config['context'] = $config['context'];
+        }
+
+        if (isset($config['context_opts']) && is_array($config['context_opts'])) {
+            $this->config['context_opts'] = $config['context_opts'];
+        }
+
+        if (isset($config['context_params']) && is_array($config['context_params'])) {
+            $this->config['context_params'] = $config['context_params'];
+        }
+
+        if (isset($config['debug']) && is_bool($config['debug'])) {
+            $this->config['debug'] = $config['debug'];
+        }
+
+        if (isset($config['debug_file']) && is_string($config['debug_file'])) {
+            $this->config['debug_file'] = $config['debug_file'];
+        }
+
+        if (isset($config['debug_request_body']) && is_bool($config['debug_request_body'])) {
+            $this->config['debug_request_body'] = $config['debug_request_body'];
+        }
+
+        if (isset($config['debug_response_body']) && is_bool($config['debug_response_body'])) {
+            $this->config['debug_response_body'] = $config['debug_response_body'];
+        }
+    }
+
+    /**
      * @param \Psr\Http\Message\RequestInterface $request
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \Psr\Http\Client\ClientExceptionInterface
@@ -87,7 +239,9 @@ class _Client implements ClientInterface
         }
 
         if ('' === $request->getUri()->getScheme()) {
-            $request = $request->getUri()->withScheme('http');
+            $request = $request->withUri(
+                $request->getUri()->withScheme('https')
+            );
         }
 
         if ('' === $request->getUri()->getHost()) {
@@ -98,8 +252,10 @@ class _Client implements ClientInterface
         }
 
         if (null === $request->getUri()->getPort()) {
-            $request = $request->getUri()->withPort(
-                ('https' === $request->getUri()->getScheme()) ? 443 : 80
+            $request = $request->withUri(
+                $request->getUri()->withPort(
+                    ('https' === $request->getUri()->getScheme()) ? 443 : 80
+                )
             );
         }
 

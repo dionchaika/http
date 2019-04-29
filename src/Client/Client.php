@@ -78,46 +78,41 @@ class Client implements ClientInterface
     /**
      * Allowed config options:
      *
-     *      1. headers (array) - the array of general request headers.
-     *          <code>
-     *              new Config([
-     *                  'headers' => [
-     *                      'Accept' => ['text/plain', 'text/html'],
-     *                      'X-Powered-By' => 'dionchaika/http'
-     *                  ]
-     *              ]);
-     *          </code>
-     *      2. cookies (bool) - enable cookies.
-     *      3. cookies_file (string) - filename to store the cookies.
-     *      4. timeout (float) - connection timeout.
-     *      5. redirects (bool) - enable redirect requests.
-     *      6. max_redirects (int) - redirect requests limit.
-     *      7. strict_redirects (bool) - perform an RFC 7230 compliant redirects requests
-     *          (POST redirect requests are sent as POST requests instead of GET ones).
-     *      8. redirects_schemes (array) - the array of schemes allowed for redirect requests.
-     *          <code>
-     *              new Config([
-     *                  'redirects_schemes' => ['http', 'https']
-     *              ]);
-     *          </code>
-     *      9. referer_header (bool) - add a "Referer" header to redirect requests.
-     *      10. redirects_history (bool) - store redirects requests URI and headers.
-     *          <code>
-     *              // Get stored redirect request host and headers:
-     *              $host = $client->getRedirectsHistory()[0]['uri']->getHost();
-     *              $headers = $client->getRedirectsHistory()[0]['headers'];
-     *          </code>
-     *      11. receive_body (bool) - receive a response body.
-     *      12. unchunk_body (bool) - unchunk a response body with "Transfer-Encoding: chunked" header.
-     *      13. decode_body (bool) - decode a response body with "Content-Encoding" header
-     *          (allowed encoding formats: gzip, deflate, compress).
-     *      14. context (resource) - socket context resource.
-     *      15. context_opts (array) - the array of socket context options.
-     *      16. context_params (array) - the array of socket context parameters.
-     *      17. debug (bool) - enable debug output.
-     *      18. debug_file (string) - filename to write the debug output.
-     *      19. debug_request_body (bool) - write a request body to debug output.
-     *      20. debug_response_body (bool) - write a response body to debug output.
+     *      1.  headers (array, default: empty) - the array of additional request headers.
+     *              <code>
+     *                  $client = new Client([
+     *                      'headers' => [
+     *                          'Accept' => ['text/plain', 'text/html'],
+     *                          'X-Requested-With' => 'XMLHttpRequest'
+     *                      ]
+     *                  ]);
+     *              </code>
+     *      2.  cookies (bool, default: true) - enable cookies.
+     *      3.  cookies_file (string, default: null) - filename to store the cookies.
+     *      4.  timeout (float, default: 30.0) - client timeout.
+     *      5.  redirects (bool, default: false) - enable redirect requests.
+     *      6.  max_redirects (int, default: 10) - redirect requests limit.
+     *      7.  strict_redirects (bool, default: true) - perform an "RFC 7230" compliant redirect requests
+     *              (POST redirect requests are sent as POST requests instead of GET requests).
+     *      8.  redirects_schemes (array, default: ['http', 'https']) - the array of schemes allowed for redirect requests.
+     *      9.  referer_header (bool, default: true) - add a "Referer" header to redirect requests.
+     *      10. redirects_history (bool, default: true) - store redirect requests URI and headers.
+     *              <code>
+     *                  // Get redirect request host and headers:
+     *                  $host = $client->getRedirectsHistory()[0]['uri']->getHost();
+     *                  $headers = $client->getRedirectsHistory()[0]['headers'];
+     *              </code>
+     *      11. receive_body (bool, default: true) - receive a response body.
+     *      12. unchunk_body (bool, default: true) - unchunk a response body with a "Transfer-Encoding: chunked" header.
+     *      13. decode_body (bool, default: true) - decode a response body with a "Content-Encoding" header
+     *              (allowed encoding formats: gzip, deflate, compress).
+     *      14. context (resource, default: null) - stream socket context.
+     *      15. context_opts (array, default: empty) - the array of stream socket context options.
+     *      16. context_params (array, default: empty) - the array of stream socket context parameters.
+     *      17. debug (bool, default: false) - enable debug output.
+     *      18. debug_file (string, default: null) - filename to write the debug output.
+     *      19. debug_request_body (bool, default: false) - write a request body to the debug output.
+     *      20. debug_response_body (bool, default: false) - write a response body to the debug output.
      *
      * @param mixed[] $config
      */

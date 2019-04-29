@@ -244,6 +244,10 @@ class _Client implements ClientInterface
             $request = $request->withHeader($name, $value);
         }
 
+        if ('' === $request->getMethod()) {
+            $request = $request->withMethod('GET');
+        }
+
         if ('' === $request->getProtocolVersion()) {
             $request = $request->withProtocolVersion('1.1');
         }

@@ -248,6 +248,8 @@ class _Client implements ClientInterface
                             break;
                         }
                     }
+
+                    $this->cookies[] = $cookie;
                 } catch (Throwable $e) {}
             }
         }

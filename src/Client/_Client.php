@@ -341,7 +341,7 @@ class _Client implements ClientInterface
             }
         }
 
-        if (false === fwrite($socket, string($request))) {
+        if (false === fwrite($socket, (string)$request)) {
             throw new ClientException(
                 $request,
                 'Unable to write data to the socket!'

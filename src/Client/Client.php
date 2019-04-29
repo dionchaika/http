@@ -12,6 +12,7 @@
 namespace Dionchaika\Http\Client;
 
 use Throwable;
+use RuntimeException;
 use Dionchaika\Http\Uri;
 use Dionchaika\Http\Stream;
 use Dionchaika\Http\Response;
@@ -118,7 +119,8 @@ class Client implements ClientInterface
      *      20. debug_response_body (bool, default: false) - write a response body to the debug output.
      *
      * @param mixed[] $config
-     * @throws \InvalidArgumentException;
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      */
     public function __construct(array $config = [])
     {
@@ -133,6 +135,13 @@ class Client implements ClientInterface
             if (!file_exists($this->config['cookies_file'])) {
                 throw new InvalidArgumentException(
                     'File does not exists: '.$this->config['cookies_file'].'!'
+                );
+            }
+
+            $cookies = file_get_contents($this->config['cookies_file']);
+            if (false === $cookies) {
+                throw new RuntimeException(
+                    'Unable to get the contents of the file: '.$this->config['cookies_file'].'!'
                 );
             }
 

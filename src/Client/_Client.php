@@ -73,9 +73,14 @@ class _Client implements ClientInterface
             $this->setConfig($config);
         }
 
-        if (null !== $this->config['cookies_file']) {
+        if (
+            null !== $this->config['cookies_file'] &&
+            file_exists($this->config['cookies_file'])
+        ) {
             try {
-                $this->cookies = unserialize(file_get_contents($this->config['cookies_file']));
+                $this->cookies = unserialize(
+                    file_get_contents($this->config['cookies_file'])
+                );
             } catch (Throwable $e) {}
         }
     }
@@ -504,7 +509,9 @@ class _Client implements ClientInterface
 
         if (null !== $this->config['cookies_file']) {
             try {
-                file_put_contents($this->config['cookies_file'], serialize($this->cookies));
+                file_put_contents(
+                    $this->config['cookies_file'], serialize($this->cookies)
+                );
             } catch (Throwable $e) {}
         }
 

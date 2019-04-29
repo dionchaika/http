@@ -390,10 +390,10 @@ class _Client implements ClientInterface
                             $value->getPath() === $cookie->getPath() &&
                             $value->getDomain() === $cookie->getDomain()
                         ) {
-                            if ($cookie->isExpired()) {
-                                unset($this->cookies[$key]);
-                            } else {
-                                $this->cookies[$key] = $cookie;
+                            unset($this->cookies[$key]);
+
+                            if (!$cookie->isExpired()) {
+                                $this->cookies[] = $cookie;
                             }
 
                             break;

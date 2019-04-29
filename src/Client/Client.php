@@ -82,8 +82,10 @@ class Client implements ClientInterface
      *              <code>
      *                  $client = new Client([
      *                      'headers' => [
-     *                          'Accept' => ['text/plain', 'text/html'],
+     *
+     *                          'Accept'           => ['text/plain', 'text/html'],
      *                          'X-Requested-With' => 'XMLHttpRequest'
+     *
      *                      ]
      *                  ]);
      *              </code>

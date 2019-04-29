@@ -303,11 +303,11 @@ class _Client implements ClientInterface
                     continue;
                 }
 
-                if (!$value->isMatchesDomain($request->getHost())) {
+                if (!$value->isMatchesDomain($request->getUri()->getHost())) {
                     continue;
                 }
 
-                if (!$value->isMatchesPath($request->getPath())) {
+                if (!$value->isMatchesPath($request->getUri()->getPath())) {
                     continue;
                 }
 

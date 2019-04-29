@@ -486,7 +486,7 @@ class _Client implements ClientInterface
             }
 
             if ($this->config['referer_header']) {
-                $request = $request->withHeader('Referer', $request->getUri());
+                $request = $request->withHeader('Referer', (string)$request->getUri());
             }
 
             ++$this->redirectsCount;

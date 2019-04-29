@@ -26,7 +26,7 @@ class Client implements ClientInterface
 {
     /**
      * The array
-     * of client config.
+     * of client config options.
      *
      * @var mixed[]
      */
@@ -132,28 +132,7 @@ class Client implements ClientInterface
             $this->config['cookies'] &&
             null !== $this->config['cookies_file']
         ) {
-            if (!file_exists($this->config['cookies_file'])) {
-                throw new InvalidArgumentException(
-                    'File does not exists: '.$this->config['cookies_file'].'!'
-                );
-            }
-
-            $contents = file_get_contents($this->config['cookies_file']);
-            if (false === $contents) {
-                throw new RuntimeException(
-                    'Unable to get the contents of the file: '.$this->config['cookies_file'].'!'
-                );
-            }
-
-            $cookies = unserialize($contents);
-            if (false === $cookies) {
-                throw new RuntimeException(
-                    'Unable to load cookies from the file: '.$this->config['cookies_file'].'!'
-                );
-            }
-
-            $this->cookies = $cookies;
-            $this->clearExpiredCookies();
+            $this->loadCookies($this->config['cookies_file']);
         }
     }
 
@@ -176,6 +155,13 @@ class Client implements ClientInterface
     public function clearCookies(): void
     {
         $this->cookies = [];
+
+        if (
+            $this->config['cookies'] &&
+            null !== $this->config['cookies_file']
+        ) {
+            $this->storeCookies($this->config['cookies_file']);
+        }
     }
 
     /**
@@ -189,6 +175,13 @@ class Client implements ClientInterface
             if ($value->isExpired()) {
                 unset($this->cookies[$key]);
             }
+        }
+
+        if (
+            $this->config['cookies'] &&
+            null !== $this->config['cookies_file']
+        ) {
+            $this->storeCookies($this->config['cookies_file']);
         }
     }
 
@@ -206,6 +199,68 @@ class Client implements ClientInterface
             ) {
                 unset($this->cookies[$key]);
             }
+        }
+    }
+
+    /**
+     * Load the client cookies.
+     *
+     * @param string $cookiesFile
+     * @return void
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     */
+    public function loadCookies(string $cookiesFile): void
+    {
+        if (!file_exists($cookiesFile)) {
+            throw new InvalidArgumentException(
+                'File does not exists: '.$cookiesFile.'!'
+            );
+        }
+
+        $contents = file_get_contents($cookiesFile);
+        if (
+            false === $contents ||
+            false === $cookies = unserialize($contents)
+        ) {
+            throw new RuntimeException(
+                'Unable to load cookies from the file: '.$cookiesFile.'!'
+            );
+        }
+
+        $this->cookies = $cookies;
+        $this->clearExpiredCookies();
+    }
+
+    /**
+     * Store the client cookies.
+     *
+     * @param string $cookiesFile
+     * @return void
+     * @throws \RuntimeException
+     */
+    public function storeCookies(string $cookiesFile): void
+    {
+        $this->clearExpiredCookies();
+
+        $nonSessionCookies = [];
+        foreach ($this->cookies as $cookie) {
+            if (
+                null !== $cookie->getExpires() ||
+                null !== $cookie->getMaxAge()
+            ) {
+                $nonSessionCookies[] = $cookie;
+            }
+        }
+
+        $contents = serialize($nonSessionCookies);
+        if (
+            false === $contents ||
+            false === file_put_contents($cookiesFile, $contents)
+        ) {
+            throw new RuntimeException(
+                'Unable to store cookies to the file: '.$cookiesFile.'!'
+            );
         }
     }
 
@@ -628,11 +683,7 @@ class Client implements ClientInterface
             $this->config['cookies'] &&
             null !== $this->config['cookies_file']
         ) {
-            try {
-                file_put_contents(
-                    $this->config['cookies_file'], serialize($this->cookies)
-                );
-            } catch (Throwable $e) {}
+            $this->storeCookies($this->config['cookies_file']);
         }
 
         return $response;

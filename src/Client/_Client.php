@@ -71,6 +71,10 @@ class _Client implements ClientInterface
      */
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
+        foreach ($this->config['headers'] as $name => $value) {
+            $request = $request->withHeader($name, $value);
+        }
+
         if ('' === $request->getProtocolVersion()) {
             $request = $request->withProtocolVersion('1.1');
         }
@@ -140,10 +144,6 @@ class _Client implements ClientInterface
         }
 
         $this->debugConnection($remoteSocket);
-
-        foreach ($this->config['headers'] as $name => $value) {
-            $request = $request->withHeader($name, $value);
-        }
 
         if ($this->config['cookies']) {
             foreach ($this->cookies as $key => $value) {

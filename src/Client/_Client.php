@@ -201,8 +201,8 @@ class _Client implements ClientInterface
 
         $response = '';
         if ($this->config['receive_body']) {
-            $data = stream_get_contents($socket);
-            if (false === $data) {
+            $response = stream_get_contents($socket);
+            if (false === $response) {
                 throw new ClientException(
                     $request,
                     'Unable to read data from the socket!'

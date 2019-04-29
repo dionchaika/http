@@ -15,6 +15,7 @@ use Throwable;
 use Dionchaika\Http\Uri;
 use Dionchaika\Http\Stream;
 use Dionchaika\Http\Response;
+use InvalidArgumentException;
 use Dionchaika\Http\Cookie\Cookie;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
@@ -117,6 +118,7 @@ class Client implements ClientInterface
      *      20. debug_response_body (bool, default: false) - write a response body to the debug output.
      *
      * @param mixed[] $config
+     * @throws \InvalidArgumentException;
      */
     public function __construct(array $config = [])
     {
@@ -126,14 +128,19 @@ class Client implements ClientInterface
 
         if (
             $this->config['cookies'] &&
-            null !== $this->config['cookies_file'] &&
-            file_exists($this->config['cookies_file'])
+            null !== $this->config['cookies_file']
         ) {
-            try {
-                $this->cookies = unserialize(
-                    file_get_contents($this->config['cookies_file'])
+            if (!file_exists($this->config['cookies_file'])) {
+                throw new InvalidArgumentException(
+                    'File does not exists: '.$this->config['cookies_file'].'!'
                 );
-            } catch (Throwable $e) {}
+            }
+
+            $this->cookies = unserialize(
+                file_get_contents($this->config['cookies_file'])
+            );
+
+            $this->clearExpiredCookies();
         }
     }
 

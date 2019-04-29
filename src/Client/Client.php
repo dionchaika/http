@@ -172,7 +172,10 @@ class Client implements ClientInterface
     public function clearExpiredCookies(): void
     {
         foreach ($this->cookies as $key => $value) {
-            if ($value->isExpired()) {
+            if (
+                (null !== $value->getExpires() || null !== $value->getMaxAge()) &&
+                $value->isExpired()
+            ) {
                 unset($this->cookies[$key]);
             }
         }

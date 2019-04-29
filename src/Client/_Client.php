@@ -72,6 +72,12 @@ class _Client implements ClientInterface
         if (!empty($config)) {
             $this->setConfig($config);
         }
+
+        if (null !== $this->config['cookies_file']) {
+            try {
+                $this->cookies = unserialize(file_get_contents($this->config['cookies_file']));
+            } catch (Throwable $e) {}
+        }
     }
 
     /**
@@ -494,6 +500,12 @@ class _Client implements ClientInterface
             $response = $this->sendRequest($request->withUri($redirectUri));
         } else {
             $this->redirectsCount = 0;
+        }
+
+        if (null !== $this->config['cookies_file']) {
+            try {
+                file_put_contents($this->config['cookies_file'], serialize($this->cookies));
+            } catch (Throwable $e) {}
         }
 
         return $response;

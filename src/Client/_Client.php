@@ -251,16 +251,11 @@ class _Client implements ClientInterface
             );
         }
 
-        if (null === $request->getUri()->getPort()) {
-            $request = $request->withUri(
-                $request->getUri()->withPort(
-                    ('https' === $request->getUri()->getScheme()) ? 443 : 80
-                )
-            );
-        }
+        $port = $request->getUri()->getPort();
+        $port = $port ?? (('https' === $request->getUri()->getScheme()) ? 443 : 80);
 
         $transportProtocol = ('https' === $request->getUri()->getScheme()) ? 'ssl' : 'tcp';
-        $remoteSocket = "{$transportProtocol}://{$request->getUri()->getHost()}:{$request->getUri()->getPort()}";
+        $remoteSocket = "{$transportProtocol}://{$request->getUri()->getHost()}:{$port}";
 
         if (null !== $this->config['context']) {
             $context = $this->config['context'];

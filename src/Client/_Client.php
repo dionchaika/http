@@ -139,6 +139,8 @@ class _Client implements ClientInterface
             );
         }
 
+        $this->debugConnection($remoteSocket);
+
         foreach ($this->config['headers'] as $name => $value) {
             $request = $request->withHeader($name, $value);
         }
@@ -194,6 +196,8 @@ class _Client implements ClientInterface
                 'Unable to write data to the socket!'
             );
         }
+
+        $this->debugRequest($request);
 
         $response = '';
         if ($this->config['receive_body']) {
@@ -300,6 +304,8 @@ class _Client implements ClientInterface
             $response = $response->withoutHeader('Content-Encoding');
         }
 
+        $this->debugResponse($response);
+
         if (
             (
                 201 === $response->getStatusCode() ||
@@ -342,6 +348,78 @@ class _Client implements ClientInterface
         }
 
         return $response;
+    }
+
+    /**
+     * @param string $remoteSocket
+     * @return void
+     */
+    protected function debugConnection(string $remoteSocket): void
+    {
+        if ($this->config['debug']) {
+            $message = "|| *  {$remoteSocket}\r\n|| \r\n";
+            if (null !== $this->config['debug_file']) {
+                try {
+                    file_put_contents($this->config['debug_file'], $message, \FILE_APPEND);
+                } catch (Throwable $e) {}
+            } else {
+                echo $message;
+            }
+        }
+    }
+
+    /**
+     * @param \Psr\Http\Message\RequestInterface $request
+     * @return void
+     */
+    protected function debugRequest(RequestInterface $request): void
+    {
+        if ($this->config['debug']) {
+            $requestParts = explode("\r\n\r\n", (string)$request, 2);
+
+            $message = '';
+
+            foreach (explode("\r\n", $requestParts[0]) as $line) {
+                $message .= "|| -> {$line}\r\n";
+            }
+
+            $message .= "|| \r\n";
+
+            if (null !== $this->config['debug_file']) {
+                try {
+                    file_put_contents($this->config['debug_file'], $message, \FILE_APPEND);
+                } catch (Throwable $e) {}
+            } else {
+                echo $message;
+            }
+        }
+    }
+
+    /**
+     * @param \Psr\Http\Message\ResponseInterface $response
+     * @return void
+     */
+    protected function debugResponse(ResponseInterface $response): void
+    {
+        if ($this->config['debug']) {
+            $responseParts = explode("\r\n\r\n", (string)$response, 2);
+
+            $message = '';
+
+            foreach (explode("\r\n", $responseParts[0]) as $line) {
+                $message .= "|| <- {$line}\r\n";
+            }
+
+            $message .= "|| <- \r\n\r\n";
+
+            if (null !== $this->config['debug_file']) {
+                try {
+                    file_put_contents($this->config['debug_file'], $message, \FILE_APPEND);
+                } catch (Throwable $e) {}
+            } else {
+                echo $message;
+            }
+        }
     }
 
     /**

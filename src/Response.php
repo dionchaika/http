@@ -20,13 +20,17 @@ class Response extends Message implements ResponseInterface
      * The reason phrases.
      */
     const REASON_PHRASES = [
+        //
         // Informational
+        //
         100 => 'Continue',
         101 => 'Switching Protocols',
         102 => 'Processing',
         103 => 'Early Hints',
 
+        //
         // Successful
+        //
         200 => 'OK',
         201 => 'Created',
         202 => 'Accepted',
@@ -38,7 +42,9 @@ class Response extends Message implements ResponseInterface
         208 => 'Already Reported',
         226 => 'IM Used',
 
+        //
         // Redirection
+        //
         300 => 'Multiple Choices',
         301 => 'Moved Permanently',
         302 => 'Found',
@@ -48,7 +54,9 @@ class Response extends Message implements ResponseInterface
         307 => 'Temporary Redirect',
         308 => 'Permanent Redirect',
 
+        //
         // Client Error
+        //
         400 => 'Bad Request',
         401 => 'Unauthorized',
         402 => 'Payment Required',
@@ -78,7 +86,9 @@ class Response extends Message implements ResponseInterface
         431 => 'Request Header Fields Too Large',
         451 => 'Unavailable For Legal Reasons',
 
+        //
         // Server Error
+        //
         500 => 'Internal Server Error',
         501 => 'Not Implemented',
         502 => 'Bad Gateway',

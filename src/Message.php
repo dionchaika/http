@@ -98,7 +98,7 @@ abstract class Message implements MessageInterface
     public function getHeader($name)
     {
         $name = strtolower($name);
-        return isset($this->headers[$name]) ? $this->headers[$name]['values'] : [];
+        return $this->hasHeader($name) ? $this->headers[$name]['values'] : [];
     }
 
     /**
@@ -110,7 +110,7 @@ abstract class Message implements MessageInterface
     public function getHeaderLine($name)
     {
         $name = strtolower($name);
-        return isset($this->headers[$name]) ? implode(', ', $this->headers[$name]['values']) : '';
+        return $this->hasHeader($name) ? implode(', ', $this->headers[$name]['values']) : '';
     }
 
     /**
@@ -127,8 +127,10 @@ abstract class Message implements MessageInterface
         $new = clone $this;
 
         $new->headers[strtolower($name)] = [
-            'name' => $new->filterHeaderName($name),
+
+            'name'   => $new->filterHeaderName($name),
             'values' => $new->filterHeaderValue($value)
+
         ];
 
         return $new;
@@ -152,8 +154,10 @@ abstract class Message implements MessageInterface
 
         if (!isset($new->headers[$normalizedName])) {
             $new->headers[$normalizedName] = [
-                'name' => $new->filterHeaderName($name),
+
+                'name'   => $new->filterHeaderName($name),
                 'values' => []
+
             ];
         }
 

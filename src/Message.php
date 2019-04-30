@@ -27,7 +27,7 @@ abstract class Message implements MessageInterface
     /**
      * The array of message headers.
      *
-     * @var array
+     * @var mixed[]
      */
     protected $headers = [];
 
@@ -53,7 +53,7 @@ abstract class Message implements MessageInterface
      * with the specified message protocol version.
      *
      * @param string $version
-     * @return static
+     * @return self
      */
     public function withProtocolVersion($version)
     {
@@ -66,7 +66,7 @@ abstract class Message implements MessageInterface
     /**
      * Get the array of message headers.
      *
-     * @return array
+     * @return mixed[]
      */
     public function getHeaders()
     {
@@ -117,9 +117,9 @@ abstract class Message implements MessageInterface
      * Return an instance
      * with the specified message header.
      *
-     * @param string $name
-     * @param string|array $value
-     * @return static
+     * @param string          $name
+     * @param string|string[] $value
+     * @return self
      * @throws \InvalidArgumentException
      */
     public function withHeader($name, $value)
@@ -139,9 +139,9 @@ abstract class Message implements MessageInterface
      * with the specified message header
      * appended with the given value.
      *
-     * @param string $name
-     * @param string|array $value
-     * @return static
+     * @param string          $name
+     * @param string|string[] $value
+     * @return self
      * @throws \InvalidArgumentException
      */
     public function withAddedHeader($name, $value)
@@ -171,7 +171,7 @@ abstract class Message implements MessageInterface
      * without the specified message header.
      *
      * @param string $name
-     * @return static
+     * @return self
      */
     public function withoutHeader($name)
     {
@@ -201,7 +201,7 @@ abstract class Message implements MessageInterface
      * with the specified message body.
      *
      * @param \Psr\Http\Message\StreamInterface $body
-     * @return static
+     * @return self
      * @throws \InvalidArgumentException
      */
     public function withBody(StreamInterface $body)
@@ -239,7 +239,7 @@ abstract class Message implements MessageInterface
     /**
      * Filter a message header value.
      *
-     * @param string|array $value
+     * @param string|string[] $value
      * @return array
      * @throws \InvalidArgumentException
      */

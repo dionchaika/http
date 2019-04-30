@@ -14,12 +14,19 @@ namespace Dionchaika\Http;
 use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * The HTTP response model.
+ *
+ * @see https://www.php-fig.org/psr/psr-7/
+ * @see https://tools.ietf.org/html/rfc7230
+ */
 class Response extends Message implements ResponseInterface
 {
     /**
      * The reason phrases.
      */
     const REASON_PHRASES = [
+
         //
         // Informational
         //
@@ -100,6 +107,7 @@ class Response extends Message implements ResponseInterface
         508 => 'Loop Detected',
         510 => 'Not Extended',
         511 => 'Network Authentication Required'
+
     ];
 
     /**
@@ -117,7 +125,7 @@ class Response extends Message implements ResponseInterface
     protected $reasonPhrase = 'OK';
 
     /**
-     * @param int $code
+     * @param int    $code
      * @param string $reasonPhrase
      * @throws \InvalidArgumentException
      */
@@ -204,9 +212,9 @@ class Response extends Message implements ResponseInterface
      * Return an instance
      * with the specified response status.
      *
-     * @param int $code
+     * @param int    $code
      * @param string $reasonPhrase
-     * @return static
+     * @return self
      * @throws \InvalidArgumentException
      */
     public function withStatus($code, $reasonPhrase = '')

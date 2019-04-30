@@ -15,6 +15,12 @@ use InvalidArgumentException;
 use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
 
+/**
+ * The HTTP response model.
+ *
+ * @see https://www.php-fig.org/psr/psr-7/
+ * @see https://tools.ietf.org/html/rfc7230
+ */
 class Request extends Message implements RequestInterface
 {
     /**
@@ -39,7 +45,7 @@ class Request extends Message implements RequestInterface
     protected $uri;
 
     /**
-     * @param string $method
+     * @param string                                     $method
      * @param \Psr\Http\Message\UriInterface|string|null $uri
      * @throws \InvalidArgumentException
      */
@@ -55,7 +61,7 @@ class Request extends Message implements RequestInterface
 
         $this->uri = $uri;
 
-        if ('1.1' === $this->protocolVersion) {
+        if ('1.1' === $this->getProtocolVersion()) {
             $this->headers['host'] = [
                 'name' => 'Host',
                 'values' => [$this->getHostHeader()]
@@ -165,7 +171,7 @@ class Request extends Message implements RequestInterface
      * with the specified request target.
      *
      * @param mixed $requestTarget
-     * @return static
+     * @return self
      */
     public function withRequestTarget($requestTarget)
     {
@@ -190,7 +196,7 @@ class Request extends Message implements RequestInterface
      * with the specified request method.
      *
      * @param string $method
-     * @return static
+     * @return self
      * @throws \InvalidArgumentException
      */
     public function withMethod($method)
@@ -220,8 +226,8 @@ class Request extends Message implements RequestInterface
      * with the specified request URI.
      *
      * @param \Psr\Http\Message\UriInterface $uri
-     * @param bool $preserveHost
-     * @return static
+     * @param bool                           $preserveHost
+     * @return self
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {

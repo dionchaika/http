@@ -96,7 +96,9 @@ class ServerRequest extends Request implements ServerRequestInterface
         $protocolVersion = '1.1';
         if (!empty($_SERVER['SERVER_PROTOCOL'])) {
             $serverProtocolParts = explode('/', $_SERVER['SERVER_PROTOCOL'], 2);
-            $protocolVersion = !empty($serverProtocolParts[1]) ? $serverProtocolParts[1] : '1.1';
+            if (!empty($serverProtocolParts[1])) {
+                $protocolVersion = $serverProtocolParts[1];
+            }
         }
 
         $uri = Uri::createFromGlobals();

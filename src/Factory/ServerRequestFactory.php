@@ -1,7 +1,7 @@
 <?php
 
 /**
- * The Psr Http Library.
+ * The PSR HTTP Library.
  *
  * @package dionchaika/http
  * @version 1.0.0

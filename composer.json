@@ -1,6 +1,6 @@
 {
     "name": "dionchaika/http",
-    "description": "The Psr Http Library",
+    "description": "The PSR HTTP Library",
     "keywords": ["php", "psr", "psr-7", "psr-17", "psr-15", "psr-18", "http", "http-message", "http-factory", "http-server-handler", "http-server-middleware", "http-client"],
     "homepage": "https://github.com/dionchaika/http",
     "version": "v1.0.0",

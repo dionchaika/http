@@ -1,5 +1,5 @@
 # Http
-The Psr Http Library
+The PSR HTTP Library.
 
 ## Requirements
 1. PHP 7

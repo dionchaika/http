@@ -93,9 +93,35 @@ class CookieStorage
 
                 $domain = $cookie->getDomain() ?? '';
                 if ('' !== $domain) {
+                    if (!$this->isMatchesDomain($domain, $request->getUri()->getHost())) {
+                        continue;
+                    }
 
+                    $storageAttributes['host_only'] = false;
+                    $storageAttributes['domain'] = $domain;
+                } else {
+                    $storageAttributes['host_only'] = true;
+                    $storageAttributes['domain'] = $request->getUri()->getHost();
                 }
 
+                $storageAttributes['path'] = $cookie->getPath() ?? $request->getUri()->getPath();
+                $storageAttributes['secure_only'] = $cookie->getSecure();
+                $storageAttributes['http_only'] = $cookie->getHttpOnly();
+
+                foreach ($this->cookies as $key => $value) {
+                    if (
+                        $value['name'] === $storageAttributes['name'] &&
+                        $value['path'] === $storageAttributes['path'] &&
+                        $value['domain'] === $storageAttributes['domain']
+                    ) {
+                        $storageAttributes['creation_time'] = $value['creation_time'];
+                        unset($this->cookies[$key]);
+
+                        break;
+                    }
+                }
+
+                $this->cookies[] = $storageAttributes;
             } catch (Exception $e) {}
         }
     }
@@ -130,20 +156,20 @@ class CookieStorage
      * matches a request URI domain.
      *
      * @param string $cookieDomain
-     * @param string $requestUriDomain
+     * @param string $requestUriHost
      * @return bool
      */
-    protected function isMatchesDomain(string $cookieDomain, string $requestUriDomain): bool
+    protected function isMatchesDomain(string $cookieDomain, string $requestUriHost): bool
     {
-        if (0 === strcasecmp($cookieDomain, $requestUriDomain)) {
+        if (0 === strcasecmp($cookieDomain, $requestUriHost)) {
             return true;
         }
 
-        if (filter_var($requestUriDomain, \FILTER_VALIDATE_IP)) {
+        if (filter_var($requestUriHost, \FILTER_VALIDATE_IP)) {
             return false;
         }
 
-        if (preg_match('/\.'.preg_quote($cookieDomain, '/').'$/', $requestUriDomain)) {
+        if (preg_match('/\.'.preg_quote($cookieDomain, '/').'$/', $requestUriHost)) {
             return true;
         }
 

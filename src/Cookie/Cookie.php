@@ -736,14 +736,14 @@ class Cookie
     protected function filterDomain(?string $domain): ?string
     {
         if (null !== $domain) {
-            if (!preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=])*$/', $domain)) {
+            if ('' === $domain || '.' === $domain) {
+                return null;
+            }
+
+            if (!preg_match('/^([a-zA-Z0-9\-._~]|%[a-fA-F0-9]{2}|[!$&\'()*+,;=])+$/', $domain)) {
                 throw new InvalidArgumentException(
                     'Invalid cookie "Domain" attribute! Cookie "Domain" attribute must be compliant with the "RFC 3986" standart.'
                 );
-            }
-
-            if ('' === $domain || '.' === $domain) {
-                return null;
             }
 
             return strtolower(ltrim($domain, '.'));
@@ -762,14 +762,14 @@ class Cookie
     protected function filterPath(?string $path): ?string
     {
         if (null !== $path) {
-            if (!preg_match('/^[^\x00-\x1f\x7f;]*$/', $path)) {
+            if ('' === $path || 0 !== strpos($path, '/')) {
+                return null;
+            }
+
+            if (!preg_match('/^[^\x00-\x1f\x7f;]+$/', $path)) {
                 throw new InvalidArgumentException(
                     'Invalid cookie "Path" attribute! Cookie "Path" attribute must be compliant with the "RFC 6265" standart.'
                 );
-            }
-
-            if ('' === $path || 0 !== strpos($path, '/')) {
-                return null;
             }
         }
 

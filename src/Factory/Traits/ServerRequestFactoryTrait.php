@@ -19,9 +19,9 @@ trait ServerRequestFactoryTrait
     /**
      * Create a new server request.
      *
-     * @param string $method
+     * @param string                                $method
      * @param \Psr\Http\Message\UriInterface|string $uri
-     * @param array $serverParams
+     * @param mixed[]                               $serverParams
      * @return \Psr\Http\Message\ServerRequestInterface
      * @throws \InvalidArgumentException
      */

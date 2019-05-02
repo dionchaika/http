@@ -21,7 +21,7 @@ trait ResponseFactoryTrait
     /**
      * Create a new response.
      *
-     * @param int $code
+     * @param int    $code
      * @param string $reasonPhrase
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \InvalidArgumentException
@@ -32,15 +32,15 @@ trait ResponseFactoryTrait
     }
 
     /**
-     * Create a new text response.
+     * Create a new plain text response.
      *
      * @param string $text
-     * @param int $code
+     * @param int    $code
      * @param string $reasonPhrase
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \InvalidArgumentException
      */
-    public function createTextResponse(string $text, int $code = 200, string $reasonPhrase = ''): ResponseInterface
+    public function createPlainTextResponse(string $text, int $code = 200, string $reasonPhrase = ''): ResponseInterface
     {
         $response = (new Response($code, $reasonPhrase))->withHeader('Content-Type', 'text/plain');
         $response->getBody()->write($text);
@@ -52,7 +52,7 @@ trait ResponseFactoryTrait
      * Create a new HTML response.
      *
      * @param string $html
-     * @param int $code
+     * @param int    $code
      * @param string $reasonPhrase
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \InvalidArgumentException
@@ -68,9 +68,9 @@ trait ResponseFactoryTrait
     /**
      * Create a new JSON response.
      *
-     * @param array $data
-     * @param int $code
-     * @param string $reasonPhrase
+     * @param mixed[] $data
+     * @param int     $code
+     * @param string  $reasonPhrase
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \InvalidArgumentException
      */
@@ -92,10 +92,10 @@ trait ResponseFactoryTrait
     /**
      * Create a new XML response.
      *
-     * @param array $data
-     * @param string $encoding
-     * @param int $code
-     * @param string $reasonPhrase
+     * @param mixed[] $data
+     * @param string  $encoding
+     * @param int     $code
+     * @param string  $reasonPhrase
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \InvalidArgumentException
      */
@@ -112,10 +112,10 @@ trait ResponseFactoryTrait
     /**
      * Create a new view response.
      *
-     * @param string $filename
-     * @param array $params
-     * @param int $code
-     * @param string $reasonPhrase
+     * @param string  $filename
+     * @param mixed[] $params
+     * @param int     $code
+     * @param string  $reasonPhrase
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \InvalidArgumentException
      */
@@ -148,7 +148,7 @@ trait ResponseFactoryTrait
      * Create a new file response.
      *
      * @param string $filename
-     * @param int $code
+     * @param int    $code
      * @param string $reasonPhrase
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \InvalidArgumentException
@@ -185,7 +185,7 @@ trait ResponseFactoryTrait
      * Create a new download response.
      *
      * @param string $filename
-     * @param int $code
+     * @param int    $code
      * @param string $reasonPhrase
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \InvalidArgumentException
@@ -218,7 +218,7 @@ trait ResponseFactoryTrait
      * Create a new redirect response.
      *
      * @param string $location
-     * @param int $code
+     * @param int    $code
      * @param string $reasonPhrase
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \InvalidArgumentException

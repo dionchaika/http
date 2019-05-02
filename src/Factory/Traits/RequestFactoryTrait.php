@@ -22,7 +22,7 @@ trait RequestFactoryTrait
     /**
      * Create a new request.
      *
-     * @param string $method
+     * @param string                                $method
      * @param \Psr\Http\Message\UriInterface|string $uri
      * @return \Psr\Http\Message\RequestInterface
      * @throws \InvalidArgumentException
@@ -33,15 +33,15 @@ trait RequestFactoryTrait
     }
 
     /**
-     * Create a new text request.
+     * Create a new plain text request.
      *
-     * @param string $method
+     * @param string                                $method
      * @param \Psr\Http\Message\UriInterface|string $uri
-     * @param string $text
+     * @param string                                $text
      * @return \Psr\Http\Message\RequestInterface
      * @throws \InvalidArgumentException
      */
-    public function createTextRequest(string $method, $uri, string $text): RequestInterface
+    public function createPlainTextRequest(string $method, $uri, string $text): RequestInterface
     {
         if ('GET' === $method || 'HEAD' === $method) {
             throw new InvalidArgumentException(
@@ -58,9 +58,9 @@ trait RequestFactoryTrait
     /**
      * Create a new JSON request.
      *
-     * @param string $method
+     * @param string                                $method
      * @param \Psr\Http\Message\UriInterface|string $uri
-     * @param array $data
+     * @param mixed[]                               $data
      * @return \Psr\Http\Message\RequestInterface
      * @throws \InvalidArgumentException
      */
@@ -88,10 +88,10 @@ trait RequestFactoryTrait
     /**
      * Create a new XML request.
      *
-     * @param string $method
+     * @param string                                $method
      * @param \Psr\Http\Message\UriInterface|string $uri
-     * @param array $data
-     * @param string $encoding
+     * @param mixed[]                               $data
+     * @param string                                $encoding
      * @return \Psr\Http\Message\RequestInterface
      * @throws \InvalidArgumentException
      */
@@ -114,9 +114,9 @@ trait RequestFactoryTrait
     /**
      * Create a new urlencoded request.
      *
-     * @param string $method
+     * @param string                                $method
      * @param \Psr\Http\Message\UriInterface|string $uri
-     * @param array $data
+     * @param mixed[]                               $data
      * @return \Psr\Http\Message\RequestInterface
      * @throws \InvalidArgumentException
      */
@@ -144,9 +144,9 @@ trait RequestFactoryTrait
     /**
      * Create a new form data request.
      *
-     * @param string $method
+     * @param string                                $method
      * @param \Psr\Http\Message\UriInterface|string $uri
-     * @param \Dionchaika\Http\Utils\FormData $formData
+     * @param \Dionchaika\Http\Utils\FormData       $formData
      * @return \Psr\Http\Message\RequestInterface
      * @throws \InvalidArgumentException
      */

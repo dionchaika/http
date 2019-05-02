@@ -21,10 +21,10 @@ trait UploadedFileFactoryTrait
      * Create a new uploaded file.
      *
      * @param \Psr\Http\Message\StreamInterface $stream
-     * @param int|null $size
-     * @param int $error
-     * @param string|null $clientFilename
-     * @param string|null $clientMediaType
+     * @param int|null                          $size
+     * @param int                               $error
+     * @param string|null                       $clientFilename
+     * @param string|null                       $clientMediaType
      * @return \Psr\Http\Message\UploadedFileInterface
      */
     public function createUploadedFile(

@@ -13,7 +13,7 @@ namespace Dionchaika\Http\Factory\Traits;
 
 use InvalidArgumentException;
 use Dionchaika\Http\Response;
-use Dionchaika\Http\Utils\XmlBuilder;
+use Dionchaika\Http\Utils\XMLBuilder;
 use Psr\Http\Message\ResponseInterface;
 
 trait ResponseFactoryTrait
@@ -101,7 +101,7 @@ trait ResponseFactoryTrait
      */
     public function createXmlResponse(array $data, string $encoding = 'utf-8', int $code = 200, string $reasonPhrase = ''): ResponseInterface
     {
-        $xml = XmlBuilder::createFromArray($data, $encoding);
+        $xml = XMLBuilder::createFromArray($data, $encoding);
 
         $response = (new Response($code, $reasonPhrase))->withHeader('Content-Type', 'text/xml');
         $response->getBody()->write($xml);

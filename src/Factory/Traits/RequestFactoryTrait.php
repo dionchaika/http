@@ -14,7 +14,7 @@ namespace Dionchaika\Http\Factory\Traits;
 use Dionchaika\Http\Request;
 use InvalidArgumentException;
 use Dionchaika\Http\Utils\FormData;
-use Dionchaika\Http\Utils\XmlBuilder;
+use Dionchaika\Http\Utils\XMLBuilder;
 use Psr\Http\Message\RequestInterface;
 
 trait RequestFactoryTrait
@@ -103,7 +103,7 @@ trait RequestFactoryTrait
             );
         }
 
-        $xml = XmlBuilder::createFromArray($data, $encoding);
+        $xml = XMLBuilder::createFromArray($data, $encoding);
 
         $request = (new Request($method, $uri))->withHeader('Content-Type', 'text/xml');
         $request->getBody()->write($xml);

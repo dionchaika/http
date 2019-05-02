@@ -16,7 +16,7 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\MessageInterface;
 
 /**
- * The HTTP message model.
+ * The PSR-7 HTTP message model.
  *
  * @see https://www.php-fig.org/psr/psr-7/
  * @see https://tools.ietf.org/html/rfc7230
@@ -59,7 +59,7 @@ abstract class Message implements MessageInterface
      * with the specified message protocol version.
      *
      * @param string $version
-     * @return self
+     * @return static
      */
     public function withProtocolVersion($version)
     {
@@ -99,7 +99,7 @@ abstract class Message implements MessageInterface
      * Get the message header.
      *
      * @param string $name
-     * @return array
+     * @return string[]
      */
     public function getHeader($name)
     {
@@ -125,7 +125,7 @@ abstract class Message implements MessageInterface
      *
      * @param string          $name
      * @param string|string[] $value
-     * @return self
+     * @return static
      * @throws \InvalidArgumentException
      */
     public function withHeader($name, $value)
@@ -149,7 +149,7 @@ abstract class Message implements MessageInterface
      *
      * @param string          $name
      * @param string|string[] $value
-     * @return self
+     * @return static
      * @throws \InvalidArgumentException
      */
     public function withAddedHeader($name, $value)
@@ -181,7 +181,7 @@ abstract class Message implements MessageInterface
      * without the specified message header.
      *
      * @param string $name
-     * @return self
+     * @return static
      */
     public function withoutHeader($name)
     {
@@ -211,7 +211,7 @@ abstract class Message implements MessageInterface
      * with the specified message body.
      *
      * @param \Psr\Http\Message\StreamInterface $body
-     * @return self
+     * @return static
      * @throws \InvalidArgumentException
      */
     public function withBody(StreamInterface $body)
@@ -250,7 +250,7 @@ abstract class Message implements MessageInterface
      * Filter a message header value.
      *
      * @param string|string[] $value
-     * @return array
+     * @return string[]
      * @throws \InvalidArgumentException
      */
     protected function filterHeaderValue($value)

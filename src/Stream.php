@@ -16,20 +16,29 @@ use RuntimeException;
 use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 
+/**
+ * The PSR-7 stream wrapper.
+ *
+ * @see https://www.php-fig.org/psr/psr-7/
+ */
 class Stream implements StreamInterface
 {
     /**
      * The writable stream modes.
      */
     const WRITABLE_STREAM_MODES = [
+
         'r+', 'w', 'w+', 'a', 'a+', 'x', 'x+', 'c', 'c+'
+
     ];
 
     /**
      * The readable stream modes.
      */
     const READABLE_STREAM_MODES = [
+
         'r', 'r+', 'w+', 'a+', 'x+', 'c+'
+
     ];
 
     /**
@@ -51,26 +60,26 @@ class Stream implements StreamInterface
      *
      * @var bool
      */
-    protected $isSeekable = false;
+    protected $seekable = false;
 
     /**
      * Is the stream writable.
      *
      * @var bool
      */
-    protected $isWritable = false;
+    protected $writable = false;
 
     /**
      * Is the stream readable.
      *
      * @var bool
      */
-    protected $isReadable = false;
+    protected $readable = false;
 
     /**
      * @param string|resource $contentOrFilenameOrResource
-     * @param string $mode
-     * @param array $opts
+     * @param string          $mode
+     * @param mixed[]         $opts
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
@@ -78,8 +87,8 @@ class Stream implements StreamInterface
     {
         if (is_string($contentOrFilenameOrResource)) {
             if (
-                is_file($contentOrFilenameOrResource) ||
-                0 === strncmp($contentOrFilenameOrResource, 'php://', 6)
+                @is_file($contentOrFilenameOrResource) ||
+                0 === strpos($contentOrFilenameOrResource, 'php://')
             ) {
                 $mode = $this->filterMode($mode);
 
@@ -122,27 +131,27 @@ class Stream implements StreamInterface
 
         $meta = stream_get_meta_data($this->resource);
 
-        $this->isSeekable = (isset($opts['seekable']) && is_bool($opts['seekable']))
+        $this->seekable = (isset($opts['seekable']) && is_bool($opts['seekable']))
             ? $opts['seekable']
             : (!empty($meta['seekable']) ? $meta['seekable'] : false);
 
         if (isset($opts['writable']) && is_bool($opts['writable'])) {
-            $this->isWritable = $opts['writable'];
+            $this->writable = $opts['writable'];
         } else {
             foreach (static::WRITABLE_STREAM_MODES as $mode) {
                 if (0 === strncmp($meta['mode'], $mode, strlen($mode))) {
-                    $this->isWritable = true;
+                    $this->writable = true;
                     break;
                 }
             }
         }
 
         if (isset($opts['readable']) && is_bool($opts['readable'])) {
-            $this->isReadable = $opts['readable'];
+            $this->readable = $opts['readable'];
         } else {
             foreach (static::READABLE_STREAM_MODES as $mode) {
                 if (0 === strncmp($meta['mode'], $mode, strlen($mode))) {
-                    $this->isReadable = true;
+                    $this->readable = true;
                     break;
                 }
             }
@@ -172,7 +181,7 @@ class Stream implements StreamInterface
 
         if (null !== $resource) {
             $this->resource = $this->size = null;
-            $this->isSeekable = $this->isWritable = $this->isReadable = false;
+            $this->seekable = $this->writable = $this->readable = false;
         }
 
         return $resource;
@@ -229,7 +238,7 @@ class Stream implements StreamInterface
      */
     public function isSeekable()
     {
-        return $this->isSeekable;
+        return $this->seekable;
     }
 
     /**
@@ -248,7 +257,7 @@ class Stream implements StreamInterface
             );
         }
 
-        if (!$this->isSeekable) {
+        if (!$this->seekable) {
             throw new RuntimeException(
                 'Stream is not seekable!'
             );
@@ -279,7 +288,7 @@ class Stream implements StreamInterface
      */
     public function isWritable()
     {
-        return $this->isWritable;
+        return $this->writable;
     }
 
     /**
@@ -297,7 +306,7 @@ class Stream implements StreamInterface
             );
         }
 
-        if (!$this->isWritable) {
+        if (!$this->writable) {
             throw new RuntimeException(
                 'Stream is not writable!'
             );
@@ -327,7 +336,7 @@ class Stream implements StreamInterface
      */
     public function isReadable()
     {
-        return $this->isReadable;
+        return $this->readable;
     }
 
     /**
@@ -345,7 +354,7 @@ class Stream implements StreamInterface
             );
         }
 
-        if (!$this->isReadable) {
+        if (!$this->readable) {
             throw new RuntimeException(
                 'Stream is not readable!'
             );
@@ -375,7 +384,7 @@ class Stream implements StreamInterface
             );
         }
 
-        if (!$this->isReadable) {
+        if (!$this->readable) {
             throw new RuntimeException(
                 'Stream is not readable!'
             );
@@ -396,7 +405,7 @@ class Stream implements StreamInterface
      * as an associative array or retrieve a specific key.
      *
      * @param string|null $key
-     * @return mixed|array|null
+     * @return mixed|mixed[]|null
      */
     public function getMetadata($key = null)
     {
@@ -463,7 +472,7 @@ class Stream implements StreamInterface
     public function __toString()
     {
         try {
-            if ($this->isSeekable()) {
+            if ($this->seekable) {
                 $this->rewind();
             }
 

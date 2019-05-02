@@ -15,7 +15,7 @@ use InvalidArgumentException;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * The HTTP response model.
+ * The PSR-7 HTTP response model.
  *
  * @see https://www.php-fig.org/psr/psr-7/
  * @see https://tools.ietf.org/html/rfc7230
@@ -214,7 +214,7 @@ class Response extends Message implements ResponseInterface
      *
      * @param int    $code
      * @param string $reasonPhrase
-     * @return self
+     * @return static
      * @throws \InvalidArgumentException
      */
     public function withStatus($code, $reasonPhrase = '')

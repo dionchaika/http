@@ -16,6 +16,11 @@ use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\UploadedFileInterface;
 
+/**
+ * The PSR-7 uploaded file wrapper.
+ *
+ * @see https://www.php-fig.org/psr/psr-7/
+ */
 class UploadedFile implements UploadedFileInterface
 {
     /**
@@ -30,7 +35,7 @@ class UploadedFile implements UploadedFileInterface
      *
      * @var bool
      */
-    protected $isMoved = false;
+    protected $moved = false;
 
     /**
      * The uploaded file stream.
@@ -69,10 +74,10 @@ class UploadedFile implements UploadedFileInterface
 
     /**
      * @param \Psr\Http\Message\StreamInterface|string $filenameOrStream
-     * @param int|null $size
-     * @param int $error
-     * @param string|null $clientFilename
-     * @param string|null $clientMediaType
+     * @param int|null                                 $size
+     * @param int                                      $error
+     * @param string|null                              $clientFilename
+     * @param string|null                              $clientMediaType
      * @throws \InvalidArgumentException
      */
     public function __construct(
@@ -104,7 +109,7 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Create a new array of uploaded files from globals.
      *
-     * @return array
+     * @return mixed[]
      * @throws \InvalidArgumentException
      */
     public static function createFromGlobals()
@@ -115,8 +120,8 @@ class UploadedFile implements UploadedFileInterface
     /**
      * Normalize an array of uploaded files.
      *
-     * @param array $files
-     * @return array
+     * @param mixed[] $files
+     * @return mixed[]
      * @throws \InvalidArgumentException
      */
     public static function normalizeFiles($files)
@@ -173,7 +178,7 @@ class UploadedFile implements UploadedFileInterface
      */
     public function getStream()
     {
-        if ($this->isMoved) {
+        if ($this->moved) {
             throw new RuntimeException(
                 'Stream is not avaliable! Uploaded file is moved.'
             );
@@ -196,7 +201,7 @@ class UploadedFile implements UploadedFileInterface
      */
     public function moveTo($targetPath)
     {
-        if ($this->isMoved) {
+        if ($this->moved) {
             throw new RuntimeException(
                 'Uploaded file is already moved!'
             );
@@ -229,7 +234,7 @@ class UploadedFile implements UploadedFileInterface
             }
         }
 
-        $this->isMoved = true;
+        $this->moved = true;
     }
 
     /**

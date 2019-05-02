@@ -16,7 +16,7 @@ use Psr\Http\Message\UriInterface;
 use Psr\Http\Message\RequestInterface;
 
 /**
- * The HTTP request model.
+ * The PSR-7 HTTP request model.
  *
  * @see https://www.php-fig.org/psr/psr-7/
  * @see https://tools.ietf.org/html/rfc7230
@@ -171,7 +171,7 @@ class Request extends Message implements RequestInterface
      * with the specified request target.
      *
      * @param mixed $requestTarget
-     * @return self
+     * @return static
      */
     public function withRequestTarget($requestTarget)
     {
@@ -196,7 +196,7 @@ class Request extends Message implements RequestInterface
      * with the specified request method.
      *
      * @param string $method
-     * @return self
+     * @return static
      * @throws \InvalidArgumentException
      */
     public function withMethod($method)
@@ -227,7 +227,7 @@ class Request extends Message implements RequestInterface
      *
      * @param \Psr\Http\Message\UriInterface $uri
      * @param bool                           $preserveHost
-     * @return self
+     * @return static
      */
     public function withUri(UriInterface $uri, $preserveHost = false)
     {

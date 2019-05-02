@@ -16,7 +16,7 @@ use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 /**
- * The HTTP server request model.
+ * The PSR-7 HTTP server request model.
  *
  * @see https://www.php-fig.org/psr/psr-7/
  * @see https://tools.ietf.org/html/rfc7230
@@ -152,7 +152,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * the specified request cookie parameters.
      *
      * @param mixed[] $cookies
-     * @return self
+     * @return static
      */
     public function withCookieParams(array $cookies)
     {
@@ -177,7 +177,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * the specified request query parameters.
      *
      * @param mixed[] $query
-     * @return self
+     * @return static
      */
     public function withQueryParams(array $query)
     {
@@ -202,7 +202,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * with the specified uploaded files.
      *
      * @param mixed[] $uploadedFiles
-     * @return self
+     * @return static
      * @throws \InvalidArgumentException
      */
     public function withUploadedFiles(array $uploadedFiles)
@@ -216,7 +216,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Get the request parsed body.
      *
-     * @return array|object|null
+     * @return mixed[]|object|null
      */
     public function getParsedBody()
     {
@@ -228,7 +228,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * with the specified request parsed body.
      *
      * @param mixed[]|object|null $data
-     * @return self
+     * @return static
      * @throws \InvalidArgumentException
      */
     public function withParsedBody($data)
@@ -267,7 +267,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      *
      * @param string $name
      * @param mixed  $value
-     * @return self
+     * @return static
      */
     public function withAttribute($name, $value)
     {
@@ -282,7 +282,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * without the specified request attribute.
      *
      * @param string $name
-     * @return self
+     * @return static
      */
     public function withoutAttribute($name)
     {
@@ -317,8 +317,8 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Filter a request parsed body.
      *
-     * @param array|object|null $data
-     * @return array|object|null
+     * @param mixed[]|object|null $data
+     * @return mixed[]|object|null
      * @throws \InvalidArgumentException
      */
     protected function filterParsedBody($data)

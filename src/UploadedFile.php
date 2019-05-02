@@ -82,9 +82,9 @@ class UploadedFile implements UploadedFileInterface
      */
     public function __construct(
         $filenameOrStream,
-        $size = null,
-        $error = \UPLOAD_ERR_OK,
-        $clientFilename = null,
+        $size            = null,
+        $error           = \UPLOAD_ERR_OK,
+        $clientFilename  = null,
         $clientMediaType = null
     ) {
         if ($filenameOrStream instanceof StreamInterface) {
@@ -156,10 +156,10 @@ class UploadedFile implements UploadedFileInterface
                 $nestedInfo = [];
                 foreach (array_keys($info['error']) as $key) {
                     $nestedInfo[$key]['tmp_name'] = $info['tmp_name'][$key];
-                    $nestedInfo[$key]['size'] = $info['size'][$key];
-                    $nestedInfo[$key]['error'] = $info['error'][$key];
-                    $nestedInfo[$key]['name'] = $info['name'][$key];
-                    $nestedInfo[$key]['type'] = $info['type'][$key];
+                    $nestedInfo[$key]['size']     = $info['size'][$key];
+                    $nestedInfo[$key]['error']    = $info['error'][$key];
+                    $nestedInfo[$key]['name']     = $info['name'][$key];
+                    $nestedInfo[$key]['type']     = $info['type'][$key];
 
                     $normalized[$name] = static::normalizeFiles($nestedInfo);
                 }
@@ -292,14 +292,14 @@ class UploadedFile implements UploadedFileInterface
         }
 
         if (
-            \UPLOAD_ERR_OK !== $error &&
-            \UPLOAD_ERR_INI_SIZE !== $error &&
-            \UPLOAD_ERR_FORM_SIZE !== $error &&
-            \UPLOAD_ERR_PARTIAL !== $error &&
-            \UPLOAD_ERR_NO_FILE !== $error &&
+            \UPLOAD_ERR_OK         !== $error &&
+            \UPLOAD_ERR_INI_SIZE   !== $error &&
+            \UPLOAD_ERR_FORM_SIZE  !== $error &&
+            \UPLOAD_ERR_PARTIAL    !== $error &&
+            \UPLOAD_ERR_NO_FILE    !== $error &&
             \UPLOAD_ERR_NO_TMP_DIR !== $error &&
             \UPLOAD_ERR_CANT_WRITE !== $error &&
-            \UPLOAD_ERR_EXTENSION !== $error
+            \UPLOAD_ERR_EXTENSION  !== $error
         ) {
             throw new InvalidArgumentException(
                 'Invalid error! Error must be a PHP file upload error.'

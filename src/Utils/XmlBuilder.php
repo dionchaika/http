@@ -11,10 +11,6 @@
 
 namespace Dionchaika\Http\Utils;
 
-/**
- * The XML builder
- * class for PSR-17 HTTP factories.
- */
 class XMLBuilder
 {
     /**
@@ -23,10 +19,14 @@ class XMLBuilder
      *      <code>
      *          XMLBuilder::createFromArray([
      *
+     *              //
      *              // A root element.
+     *              //
      *              'users' => [
      *
-     *                  // Will create the next XML:
+     *                  //
+     *                  // Will create the following XML:
+     *                  //
      *                  //      <user id="1">
      *                  //           <name>Max</name>
      *                  //           <age>Max</age>
@@ -34,6 +34,7 @@ class XMLBuilder
      *                  //           <married value="0" />
      *                  //           <friends></friends>
      *                  //      </user>
+     *                  //
      *                  'user id="1"' => [
      *
      *                      'name'              => 'Max',

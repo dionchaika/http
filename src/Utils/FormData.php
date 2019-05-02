@@ -14,8 +14,7 @@ namespace Dionchaika\Http\Utils;
 use InvalidArgumentException;
 
 /**
- * The multipart/form-data
- * model class for PSR-7 HTTP requests.
+ * The multipart/form-data body model.
  *
  * @see https://tools.ietf.org/html/rfc2046#section-5.1
  */
@@ -89,7 +88,7 @@ class FormData
         string $name,
         $value,
         ?string $filename = null,
-        array $headers = []
+        array $headers    = []
     ): self {
         if (0 === strncmp($value, '@', 1)) {
             $filePath = substr($value, 1);

@@ -15,7 +15,7 @@ use RuntimeException;
 use InvalidArgumentException;
 
 /**
- * The cookie model.
+ * The HTTP cookie model.
  *
  * @see https://tools.ietf.org/html/rfc6265
  */
@@ -118,27 +118,48 @@ class Cookie
     protected $expiryTime = 0;
 
     /**
-     * @param string $name
+     * The array of cookie storage attributes.
+     *
+     * @var mixed[]
+     */
+    protected $storageAttributes = [
+
+        'name'             => null,
+        'value'            => null,
+        'expiry_time'      => null,
+        'domain'           => null,
+        'path'             => null,
+        'creation_time'    => null,
+        'last_access_time' => null,
+        'persistent'       => null,
+        'host_only'        => null,
+        'secure_only'      => null,
+        'http_only'        => null
+
+    ];
+
+    /**
+     * @param string      $name
      * @param string|null $value
      * @param string|null $expires
-     * @param int|null $maxAge
+     * @param int|null    $maxAge
      * @param string|null $domain
      * @param string|null $path
-     * @param bool $secure
-     * @param bool $httpOnly
+     * @param bool        $secure
+     * @param bool        $httpOnly
      * @param string|null $sameSite
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     public function __construct(
         string $name,
-        ?string $value = null,
-        ?string $expires = null,
-        ?int $maxAge = null,
-        ?string $domain = null,
-        ?string $path = null,
-        bool $secure = false,
-        bool $httpOnly = false,
+        ?string $value    = null,
+        ?string $expires  = null,
+        ?int $maxAge      = null,
+        ?string $domain   = null,
+        ?string $path     = null,
+        bool $secure      = false,
+        bool $httpOnly    = false,
         ?string $sameSite = null
     ) {
         if (0 === strpos('__Host-', $name)) {
@@ -149,44 +170,44 @@ class Cookie
             $this->hasSecurePrefix = true;
         }
 
-        $this->name = $this->filterName($name);
-        $this->value = $this->filterValue($value);
-        $this->expires = $this->filterExpires($expires);
-        $this->maxAge = $maxAge;
-        $this->domain = $this->filterDomain($domain);
-        $this->path = $this->filterPath($path);
-        $this->secure = $secure;
+        $this->name     = $this->filterName($name);
+        $this->value    = $this->filterValue($value);
+        $this->expires  = $this->filterExpires($expires);
+        $this->maxAge   = $maxAge;
+        $this->domain   = $this->filterDomain($domain);
+        $this->path     = $this->filterPath($path);
+        $this->secure   = $secure;
         $this->httpOnly = $httpOnly;
         $this->sameSite = $this->filterSameSite($sameSite);
 
-        $this->expiryTime = $this->updateExpiryTime($this->expires, $this->maxAge);
+        $this->storageAttributes['expiry_time'] = $this->updateExpiryTime($this->expires, $this->maxAge);
     }
 
     /**
      * Create a new cookie.
      *
-     * @param string $name
+     * @param string      $name
      * @param string|null $value
-     * @param int|null $expiryTime
+     * @param int|null    $expiryTime
      * @param string|null $domain
      * @param string|null $path
-     * @param bool $secure
-     * @param bool $httpOnly
+     * @param bool        $secure
+     * @param bool        $httpOnly
      * @param string|null $sameSite
-     * @return \Dionchaika\Http\Cookie\Cookie
+     * @return self
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
     public static function create(
         string $name,
-        ?string $value = null,
-        ?int $expiryTime = null,
-        ?string $domain = null,
-        ?string $path = null,
-        bool $secure = false,
-        bool $httpOnly = false,
+        ?string $value    = null,
+        ?int $expiryTime  = null,
+        ?string $domain   = null,
+        ?string $path     = null,
+        bool $secure      = false,
+        bool $httpOnly    = false,
         ?string $sameSite = null
-    ): Cookie {
+    ): self {
         if (null === $expiryTime) {
             $expires = $maxAge = null;
         } else {
@@ -211,11 +232,11 @@ class Cookie
      * Create a new cookie from string.
      *
      * @param string $cookie
-     * @return \Dionchaika\Http\Cookie\Cookie
+     * @return self
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    public static function createFromString(string $cookie): Cookie
+    public static function createFromString(string $cookie): self
     {
         $cookieParts = explode(';', $cookie);
 
@@ -231,13 +252,15 @@ class Cookie
         $value = ('' !== $value = trim($nameValuePairParts[1])) ? $value : null;
 
         $attributes = [
-            'Expires' => null,
-            'Max-Age' => null,
-            'Domain' => null,
-            'Path' => null,
-            'Secure' => false,
+
+            'Expires'  => null,
+            'Max-Age'  => null,
+            'Domain'   => null,
+            'Path'     => null,
+            'Secure'   => false,
             'HttpOnly' => false,
             'SameSite' => null
+
         ];
 
         foreach ($cookieParts as $cookiePart) {
@@ -261,10 +284,13 @@ class Cookie
             foreach ($expiresParts as $expiresPart) {
                 if (null === $time && preg_match('/^(\d{1,2})\:(\d{1,2})\:(\d{1,2})$/', $expiresPart, $matches)) {
                     $time = [
-                        'hours' => (int)$matches[1],
+
+                        'hours'   => (int)$matches[1],
                         'minutes' => (int)$matches[2],
                         'seconds' => (int)$matches[3]
+
                     ];
+
                     continue;
                 }
 
@@ -275,19 +301,20 @@ class Cookie
 
                 if (null === $month && preg_match('/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)$/i', $expiresPart, $matches)) {
                     switch (strtolower($matches[1])) {
-                        case 'jan': $month = 1; break;
-                        case 'feb': $month = 2; break;
-                        case 'mar': $month = 3; break;
-                        case 'apr': $month = 4; break;
-                        case 'may': $month = 5; break;
-                        case 'jun': $month = 6; break;
-                        case 'jul': $month = 7; break;
-                        case 'aug': $month = 8; break;
-                        case 'sep': $month = 9; break;
+                        case 'jan': $month = 1;  break;
+                        case 'feb': $month = 2;  break;
+                        case 'mar': $month = 3;  break;
+                        case 'apr': $month = 4;  break;
+                        case 'may': $month = 5;  break;
+                        case 'jun': $month = 6;  break;
+                        case 'jul': $month = 7;  break;
+                        case 'aug': $month = 8;  break;
+                        case 'sep': $month = 9;  break;
                         case 'oct': $month = 10; break;
                         case 'nov': $month = 11; break;
                         case 'dec': $month = 12; break;
                     }
+
                     continue;
                 }
 
@@ -463,7 +490,7 @@ class Cookie
      * @return static
      * @throws \InvalidArgumentException
      */
-    public function withValue(?string $value): Cookie
+    public function withValue(?string $value): self
     {
         $new = clone $this;
         $new->value = $new->filterValue($value);
@@ -480,12 +507,12 @@ class Cookie
      * @throws \RuntimeException
      * @throws \InvalidArgumentException
      */
-    public function withExpires(?string $expires): Cookie
+    public function withExpires(?string $expires): self
     {
         $new = clone $this;
 
         $new->expires = $new->filterExpires($expires);
-        $new->expiryTime = $new->updateExpiryTime($new->expires, $new->maxAge);
+        $this->storageAttributes['expiry_time'] = $new->updateExpiryTime($new->expires, $new->maxAge);
 
         return $new;
     }
@@ -498,12 +525,12 @@ class Cookie
      * @return static
      * @throws \RuntimeException
      */
-    public function withMaxAge(?int $maxAge): Cookie
+    public function withMaxAge(?int $maxAge): self
     {
         $new = clone $this;
 
         $new->maxAge = $maxAge;
-        $new->expiryTime = $new->updateExpiryTime($new->expires, $new->maxAge);
+        $this->storageAttributes['expiry_time'] = $new->updateExpiryTime($new->expires, $new->maxAge);
 
         return $new;
     }
@@ -516,7 +543,7 @@ class Cookie
      * @return static
      * @throws \InvalidArgumentException
      */
-    public function withDomain(?string $domain): Cookie
+    public function withDomain(?string $domain): self
     {
         $new = clone $this;
         $new->domain = $new->filterDomain($domain);
@@ -532,7 +559,7 @@ class Cookie
      * @return static
      * @throws \InvalidArgumentException
      */
-    public function withPath(?string $path): Cookie
+    public function withPath(?string $path): self
     {
         $new = clone $this;
         $new->path = $new->filterPath($path);
@@ -547,7 +574,7 @@ class Cookie
      * @param bool $secure
      * @return static
      */
-    public function withSecure(bool $secure): Cookie
+    public function withSecure(bool $secure): self
     {
         $new = clone $this;
         $new->secure = $secure;
@@ -562,7 +589,7 @@ class Cookie
      * @param bool $httpOnly
      * @return static
      */
-    public function withHttpOnly(bool $httpOnly): Cookie
+    public function withHttpOnly(bool $httpOnly): self
     {
         $new = clone $this;
         $new->httpOnly = $httpOnly;
@@ -578,7 +605,7 @@ class Cookie
      * @return static
      * @throws \InvalidArgumentException
      */
-    public function withSameSite(?string $sameSite): Cookie
+    public function withSameSite(?string $sameSite): self
     {
         $new = clone $this;
         $new->sameSite = $new->filterSameSite($sameSite);
@@ -658,7 +685,8 @@ class Cookie
      */
     public function isExpired(): bool
     {
-        return time() >= $this->expiryTime;
+        return $this->storageAttributes['persistent'] &&
+            time() >= $this->storageAttributes['expiry_time'];
     }
 
     /**
@@ -870,7 +898,7 @@ class Cookie
      * Update the cookie expiry time.
      *
      * @param string|null $expires
-     * @param int|null $maxAge
+     * @param int|null    $maxAge
      * @return int
      * @throws \RuntimeException
      */

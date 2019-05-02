@@ -15,6 +15,12 @@ use InvalidArgumentException;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\MessageInterface;
 
+/**
+ * The HTTP message model.
+ *
+ * @see https://www.php-fig.org/psr/psr-7/
+ * @see https://tools.ietf.org/html/rfc7230
+ */
 abstract class Message implements MessageInterface
 {
     /**

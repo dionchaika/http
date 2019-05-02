@@ -15,54 +15,60 @@ use InvalidArgumentException;
 use Psr\Http\Message\UploadedFileInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * The HTTP server request model.
+ *
+ * @see https://www.php-fig.org/psr/psr-7/
+ * @see https://tools.ietf.org/html/rfc7230
+ */
 class ServerRequest extends Request implements ServerRequestInterface
 {
     /**
      * The array of server parameters.
      *
-     * @var array
+     * @var mixed[]
      */
     protected $serverParams = [];
 
     /**
      * The array of request cookie parameters.
      *
-     * @var array
+     * @var mixed[]
      */
     protected $cookieParams = [];
 
     /**
      * The array of request query parameters.
      *
-     * @var array
+     * @var mixed[]
      */
     protected $queryParams = [];
 
     /**
      * The array of uploaded files.
      *
-     * @var array
+     * @var \Psr\Http\Message\UploadedFileInterface[]
      */
     protected $uploadedFiles = [];
 
     /**
      * The request parsed body.
      *
-     * @var array|object|null
+     * @var mixed[]|object|null
      */
     protected $parsedBody;
 
     /**
      * The array of request attributes.
      *
-     * @var array
+     * @var mixed[]
      */
     protected $attributes = [];
 
     /**
-     * @param string $method
+     * @param string                                     $method
      * @param \Psr\Http\Message\UriInterface|string|null $uri
-     * @param array $serverParams
+     * @param mixed[]                                    $serverParams
      * @throws \InvalidArgumentException
      */
     public function __construct($method = 'GET', $uri = null, $serverParams = [])
@@ -100,7 +106,7 @@ class ServerRequest extends Request implements ServerRequestInterface
             ->withUploadedFiles($uploadedFiles);
 
         foreach ($_SERVER as $key => $value) {
-            if (0 === strncmp($key, 'HTTP_', 5)) {
+            if (0 === strpos($key, 'HTTP_')) {
                 $headerName = strtolower(str_replace('_', '-', substr($key, 5)));
                 $headerNameParts = array_map('ucfirst', explode('-', $headerName));
 
@@ -117,7 +123,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Get the array of server parameters.
      *
-     * @return array
+     * @return mixed[]
      */
     public function getServerParams()
     {
@@ -127,7 +133,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Get the array of request cookie parameters.
      *
-     * @return array
+     * @return mixed[]
      */
     public function getCookieParams()
     {
@@ -138,8 +144,8 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Return an instance with
      * the specified request cookie parameters.
      *
-     * @param array $cookies
-     * @return static
+     * @param mixed[] $cookies
+     * @return self
      */
     public function withCookieParams(array $cookies)
     {
@@ -152,7 +158,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Get the array of request query parameters.
      *
-     * @return array
+     * @return mixed[]
      */
     public function getQueryParams()
     {
@@ -163,8 +169,8 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Return an instance with
      * the specified request query parameters.
      *
-     * @param array $query
-     * @return static
+     * @param mixed[] $query
+     * @return self
      */
     public function withQueryParams(array $query)
     {
@@ -177,7 +183,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Get the array of uploaded files.
      *
-     * @return array
+     * @return \Psr\Http\Message\UploadedFileInterface[]
      */
     public function getUploadedFiles()
     {
@@ -188,8 +194,8 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Return an instance
      * with the specified uploaded files.
      *
-     * @param array $query
-     * @return static
+     * @param \Psr\Http\Message\UploadedFileInterface[] $uploadedFiles
+     * @return self
      * @throws \InvalidArgumentException
      */
     public function withUploadedFiles(array $uploadedFiles)
@@ -214,8 +220,8 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Return an instance
      * with the specified request parsed body.
      *
-     * @param array|object|null $data
-     * @return static
+     * @param mixed[]|object|null $data
+     * @return self
      * @throws \InvalidArgumentException
      */
     public function withParsedBody($data)
@@ -229,7 +235,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Get the array of request attributes.
      *
-     * @return array
+     * @return mixed[]
      */
     public function getAttributes()
     {
@@ -239,7 +245,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Get the request attribute.
      *
-     * @param string $name
+     * @param string     $name
      * @param mixed|null $default
      * @return mixed
      */
@@ -253,8 +259,8 @@ class ServerRequest extends Request implements ServerRequestInterface
      * with the specified request attribute.
      *
      * @param string $name
-     * @param mixed $value
-     * @return static
+     * @param mixed  $value
+     * @return self
      */
     public function withAttribute($name, $value)
     {
@@ -269,7 +275,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * without the specified request attribute.
      *
      * @param string $name
-     * @return static
+     * @return self
      */
     public function withoutAttribute($name)
     {
@@ -282,8 +288,8 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Filter an array of uploaded files.
      *
-     * @param array $uploadedFiles
-     * @return array
+     * @param \Psr\Http\Message\UploadedFileInterface[] $uploadedFiles
+     * @return \Psr\Http\Message\UploadedFileInterface[]
      * @throws \InvalidArgumentException
      */
     protected function filterUploadedFiles(array $uploadedFiles)

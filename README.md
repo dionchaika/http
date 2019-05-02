@@ -1,5 +1,5 @@
 # HTTP
-The PSR HTTP Library.
+The PSR HTTP Library
 
 ## Requirements
 1. PHP 7.1.3 or higher

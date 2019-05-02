@@ -86,7 +86,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      */
     public static function createFromGlobals()
     {
-        $method = !empty($_POST['_method']) ? $_POST['_method'] : (!empty($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET');
+        $method = isset($_POST['_method']) ? $_POST['_method'] : (!empty($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : 'GET');
 
         $protocolVersion = '1.1';
         if (!empty($_SERVER['SERVER_PROTOCOL'])) {

@@ -26,7 +26,7 @@ class CookieStorage
     /**
      * The array of cookies.
      *
-     * @var array
+     * @var mixed[]
      */
     protected $cookies = [];
 
@@ -38,140 +38,28 @@ class CookieStorage
      * @return void
      * @throws \InvalidArgumentException
      */
-    public function storeCookies(
-        RequestInterface $request,
-        ResponseInterface $response
-    ): void {
-        $requestUri = $request->getUri();
-        $requestHost = $requestUri->getHost();
-        $requestPath = $requestUri->getPath();
-
-        if ('' === $requestHost) {
+    public function getFromRequest(RequestInterface $request, ResponseInterface $response): void
+    {
+        if ('' === $request->getUri()->getHost()) {
             throw new InvalidArgumentException(
                 'Invalid request! Host is not defined.'
             );
         }
 
-        $requestPath = ('' === $requestPath) ? '/' : '/'.ltrim($requestPath, '/');
+        if ('' === $request->getUri()->getPath()) {
+            $request = $request->withUri(
+                $request->getUri()->withPath('/')
+            );
+        } else {
+            $request = $request->withUri(
+                $request->getUri()->withPath('/'.ltrim($request->getUri()->getPath()))
+            );
+        }
 
         foreach ($response->getHeader('Set-Cookie') as $setCookie) {
             try {
-                $cookie = Cookie::createFromString($setCookie);
-
-                $name = $cookie->getName();
-                $value = $cookie->getValue();
-                $creationTime = $lastAccessTime = time();
-
-                if (null !== $cookie->getMaxAge()) {
-                    $persistent = true;
-                    $expiryTime = time() + $cookie->getMaxAge();
-                } else if (null !== $cookie->getExpires()) {
-                    $persistent = true;
-                    $expiryTime = strtotime($cookie->getExpires());
-                } else {
-                    $persistent = false;
-                    $expiryTime = 0;
-                }
-
-                $domain = $cookie->getDomain() ?? '';
-                if ('' !== $domain) {
-                    if (!$cookie->isMatchesDomain($requestHost)) {
-                        continue;
-                    }
-
-                    $hostOnly = false;
-                } else {
-                    $hostOnly = true;
-                    $domain = $requestHost;
-                }
-
-                $path = $cookie->getPath();
-                $path = (null === $path || '/' === $path) ? $requestPath : $path;
-
-                $secureOnly = $cookie->getSecure();
-                $httpOnly = $cookie->getHttpOnly();
-
-                foreach ($this->cookies as $k => $v) {
-                    if (
-                        $v['domain'] === $domain &&
-                        $v['path'] === $path &&
-                        $v['name'] === $name
-                    ) {
-                        $creationTime = $v['creation_time'];
-                        unset($this->cookies[$k]);
-                    }
-                }
-
-                $this->cookies[] = [
-                    'name' => $name,
-                    'value' => $value,
-                    'expiry_time' => $expiryTime,
-                    'domain' => $domain,
-                    'path' => $path,
-                    'creation_time' => $creationTime,
-                    'last_access_time' => $lastAccessTime,
-                    'persistent' => $persistent,
-                    'host_only' => $hostOnly,
-                    'secure_only' => $secureOnly,
-                    'http_only' => $httpOnly
-                ];
+                
             } catch (Exception $e) {}
         }
-    }
-
-    /**
-     * Clear cookies.
-     *
-     * @return void
-     */
-    public function clearCookies(): void
-    {
-        $this->cookies = [];
-    }
-
-    /**
-     * Clear expired cookies.
-     *
-     * @return void
-     */
-    public function clearExpiredCookies(): void
-    {
-        foreach ($this->cookies as $k => $v) {
-            if (
-                $v['persistent'] &&
-                time() >= $v['expiry_time']
-            ) {
-                unset($this->cookies[$k]);
-            }
-        }
-    }
-
-    /**
-     * Clear session cookies.
-     *
-     * @return void
-     */
-    public function clearSessionCookies(): void
-    {
-        foreach ($this->cookies as $k => $v) {
-            if (!$v['persistent']) {
-                unset($this->cookies[$v]);
-            }
-        }
-    }
-
-    /**
-     * Add cookies to request.
-     *
-     * @param \Psr\Http\Message\RequestInterface $request
-     * @return \Psr\Http\Message\RequestInterface
-     */
-    public function addToRequest(RequestInterface $request): RequestInterface
-    {
-        $this->clearExpiredCookies();
-
-        //
-
-        return $request;
     }
 }

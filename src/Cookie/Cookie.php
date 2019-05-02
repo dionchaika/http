@@ -111,27 +111,6 @@ class Cookie
     protected $hasSecurePrefix = false;
 
     /**
-     * The array of cookie storage attributes.
-     *
-     * @var mixed[]
-     */
-    protected $storageAttributes = [
-
-        'name'             => null,
-        'value'            => null,
-        'expiry_time'      => null,
-        'domain'           => null,
-        'path'             => null,
-        'creation_time'    => null,
-        'last_access_time' => null,
-        'persistent'       => null,
-        'host_only'        => null,
-        'secure_only'      => null,
-        'http_only'        => null
-
-    ];
-
-    /**
      * @param string      $name
      * @param string|null $value
      * @param string|null $expires
@@ -172,8 +151,6 @@ class Cookie
         $this->secure   = $secure;
         $this->httpOnly = $httpOnly;
         $this->sameSite = $this->filterSameSite($sameSite);
-
-        $this->storageAttributes['expiry_time'] = $this->updateExpiryTime($this->expires, $this->maxAge);
     }
 
     /**
@@ -503,9 +480,7 @@ class Cookie
     public function withExpires(?string $expires): self
     {
         $new = clone $this;
-
         $new->expires = $new->filterExpires($expires);
-        $this->storageAttributes['expiry_time'] = $new->updateExpiryTime($new->expires, $new->maxAge);
 
         return $new;
     }
@@ -521,9 +496,7 @@ class Cookie
     public function withMaxAge(?int $maxAge): self
     {
         $new = clone $this;
-
         $new->maxAge = $maxAge;
-        $this->storageAttributes['expiry_time'] = $new->updateExpiryTime($new->expires, $new->maxAge);
 
         return $new;
     }
@@ -672,70 +645,6 @@ class Cookie
     }
 
     /**
-     * Check is the cookie expired.
-     *
-     * @return bool
-     */
-    public function isExpired(): bool
-    {
-        return $this->storageAttributes['persistent'] &&
-            time() >= $this->storageAttributes['expiry_time'];
-    }
-
-    /**
-     * Check is the cookie matches a domain.
-     *
-     * @param string $domain
-     * @return bool
-     */
-    public function isMatchesDomain(string $domain): bool
-    {
-        if (
-            null === $this->domain ||
-            0 === strcasecmp($this->domain, $domain)
-        ) {
-            return true;
-        }
-
-        if (filter_var($domain, FILTER_VALIDATE_IP)) {
-            return false;
-        }
-
-        if (preg_match('/\.'.preg_quote($this->domain, '/').'$/', $domain)) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * Check is the cookie matches a path.
-     *
-     * @param string $path
-     * @return bool
-     */
-    public function isMatchesPath(string $path): bool
-    {
-        if (
-            null === $this->path ||
-            '/' === $this->path ||
-            $this->path === $path
-        ) {
-            return true;
-        }
-
-        if (0 !== strpos($path, $this->path)) {
-            return false;
-        }
-
-        if ('/' === substr($this->path, -1, 1)) {
-            return true;
-        }
-
-        return '/' === substr($path, strlen($this->path), 1);
-    }
-
-    /**
      * Check has the cookie a __Host- prefix.
      *
      * @return bool
@@ -860,7 +769,7 @@ class Cookie
             }
 
             if ('' === $path || 0 !== strpos($path, '/')) {
-                return '/';
+                return null;
             }
         }
 
@@ -885,34 +794,6 @@ class Cookie
         }
 
         return $sameSite;
-    }
-
-    /**
-     * Update the cookie expiry time.
-     *
-     * @param string|null $expires
-     * @param int|null    $maxAge
-     * @return int
-     * @throws \RuntimeException
-     */
-    protected function updateExpiryTime(?string $expires, ?int $maxAge): int
-    {
-        if (null !== $maxAge) {
-            return time() + $maxAge;
-        }
-
-        if (null !== $expires) {
-            $expiryTime = strtotime($expires);
-            if (false === $expiryTime) {
-                throw new RuntimeException(
-                    'Unable to update the cookie expiry time!'
-                );
-            }
-
-            return $expiryTime;
-        }
-
-        return 0;
     }
 
     /**

@@ -97,13 +97,12 @@ class CookieStorage
                 if (null !== $cookie->getMaxAge()) {
                     $storageAttributes['persistent'] = true;
                     $storageAttributes['expiry_time'] = time() + $cookie->getMaxAge();
-                } else if (null !== $cookie->getExpires()) {
+                } else if (
+                    null !== $cookie->getExpires() &&
+                    flase !== $expiryTime = strtotime($cookie->getExpires())
+                ) {
                     $storageAttributes['persistent'] = true;
-
-                    $storageAttributes['expiry_time'] = strtotime($cookie->getExpires());
-                    if (false === $storageAttributes['expiry_time']) {
-                        continue;
-                    }
+                    $storageAttributes['expiry_time'] = $expiryTime;
                 } else {
                     $storageAttributes['persistent'] = false;
                     $storageAttributes['expiry_time'] = -2147483648;

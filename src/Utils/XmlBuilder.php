@@ -35,26 +35,26 @@ class XMLBuilder
      *                  //      </user>
      *                  'user id="1"' => [
      *
-     *                      'name'  => 'Max',
-     *                      'age'   => 21,
-     *                      'email' => 'max@email.com',
-     *                      'married value="0"'
+     *                      'name'              => 'Max',
+     *                      'age'               => 21,
+     *                      'email'             => 'max@email.com',
+     *                      'married value="0"' => []
      *
      *                  ],
      *                  'user id="2"' => [
      *
-     *                      'name'  => 'John',
-     *                      'age'   => 23,
-     *                      'email' => 'john@email.com'
-     *                      'married value="1"'
+     *                      'name'              => 'John',
+     *                      'age'               => 23,
+     *                      'email'             => 'john@email.com'
+     *                      'married value="1"' => []
      *
      *                  ],
      *                  'user id="3"' => [
      *
-     *                      'name'  => 'Steve',
-     *                      'age'   => 25,
-     *                      'email' => 'steve@email.com'
-     *                      'married value="1"'
+     *                      'name'              => 'Steve',
+     *                      'age'               => 25,
+     *                      'email'             => 'steve@email.com'
+     *                      'married value="1"' => []
      *
      *                  ],
      *

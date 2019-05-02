@@ -31,14 +31,14 @@ class CookieStorage
     protected $cookies = [];
 
     /**
-     * Store cookies from response.
+     * Receive cookies from response.
      *
      * @param \Psr\Http\Message\RequestInterface $request
      * @param \Psr\Http\Message\ResponseInterface $response
      * @return void
      * @throws \InvalidArgumentException
      */
-    public function storeFromResponse(RequestInterface $request, ResponseInterface $response): void
+    public function receiveFromResponse(RequestInterface $request, ResponseInterface $response): void
     {
         if ('' === $request->getUri()->getHost()) {
             throw new InvalidArgumentException(
@@ -58,6 +58,8 @@ class CookieStorage
 
         foreach ($response->getHeader('Set-Cookie') as $setCookie) {
             try {
+                $cookie = Cookie::createFromString($setCookie);
+
                 
             } catch (Exception $e) {}
         }

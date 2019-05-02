@@ -96,7 +96,7 @@ class ServerRequest extends Request implements ServerRequestInterface
         $protocolVersion = '1.1';
         if (!empty($_SERVER['SERVER_PROTOCOL'])) {
             $serverProtocolParts = explode('/', $_SERVER['SERVER_PROTOCOL'], 2);
-            if (!empty($serverProtocolParts[1])) {
+            if (!empty($serverProtocolParts[1]) && preg_match('/^\d\.\d$/', $serverProtocolParts[1])) {
                 $protocolVersion = $serverProtocolParts[1];
             }
         }

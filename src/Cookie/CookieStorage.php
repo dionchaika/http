@@ -168,17 +168,22 @@ class CookieStorage
     {
         $contents = '';
         foreach ($this->cookies as $cookie) {
-            $contents .= $cookie['name'];
-            $contents .= " {$cookie['value']}";
-            $contents .= " {$cookie['expiry_time']}";
-            $contents .= " {$cookie['domain']}";
-            $contents .= " {$cookie['path']}";
-            $contents .= " {$cookie['creation_time']}";
-            $contents .= " {$cookie['last_access_time']}";
-            $contents .= " {${$cookie['persistent'] ? 'TRUE' : 'FALSE'}}";
-            $contents .= " {${$cookie['host_only'] ? 'TRUE' : 'FALSE'}}";
-            $contents .= " {${$cookie['secure_only'] ? 'TRUE' : 'FALSE'}}";
-            $contents .= " {${$cookie['http_only'] ? 'TRUE' : 'FALSE'}}\r\n";
+            $persistent = $cookie['persistent'] ? 'TRUE' : 'FALSE';
+            $hostOnly = $cookie['host_only'] ? 'TRUE' : 'FALSE';
+            $secureOnly = $cookie['secure_only'] ? 'TRUE' : 'FALSE';
+            $httpOnly = $cookie['http_only'] ? 'TRUE' : 'FALSE';
+
+            $contents .= "name: {$cookie['name']}\r\n";
+            $contents .= "value: {$cookie['value']}\r\n";
+            $contents .= "expiry_time: {$cookie['expiry_time']}\r\n";
+            $contents .= "domain: {$cookie['domain']}\r\n";
+            $contents .= "path: {$cookie['path']}\r\n";
+            $contents .= "creation_time: {$cookie['creation_time']}\r\n";
+            $contents .= "last_access_time: {$cookie['last_access_time']}\r\n";
+            $contents .= "persistent: {$persistent}\r\n";
+            $contents .= "host_only: {$hostOnly}\r\n";
+            $contents .= "secure_only: {$secureOnly}\r\n";
+            $contents .= "http_only: {$httpOnly}\r\n\r\n";
         }
 
         if (false === file_put_contents($filename, $contents)) {

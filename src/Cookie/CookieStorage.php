@@ -159,7 +159,29 @@ class CookieStorage
     {
         $this->clearExpiredCookies();
 
-        //
+        if (count($this->cookies) > $this->maxCookies) {
+            if (false === usort($this->cookies, function ($a, $b) {
+                if ($a['last_access_time'] === $b['last_access_time']) {
+                    return 0;
+                }
+
+                return ($a['last_access_time'] < $b['last_access_time']) ? -1 : 1;
+            })) {
+                return;
+            }
+
+            $deletedCount = 0;
+            $count = count($this->cookies) - $this->maxCookies;
+
+            foreach (array_keys($this->cookies) as $key) {
+                if ($deletedCount >= $count) {
+                    break;
+                }
+
+                unset($this->cookies[$key]);
+                ++$deletedCount;
+            }
+        }
     }
 
     /**

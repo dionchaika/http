@@ -131,29 +131,66 @@ class CookieStorage
             );
         }
 
-        $contentsParts = explode("\r\n", $contents);
+        $contentsParts = explode("\r\n\r\n", $contents);
         foreach ($contentsParts as $contentsPart) {
-            $storageAttributes = explode(' ', $contentsPart);
+            $cookieParts = explode("\r\n", $contentsPart);
 
-            if (11 !== count($storageAttributes)) {
+            $storageAttributes = [
+
+                'name'             => null,
+                'value'            => null,
+                'expiry_time'      => null,
+                'domain'           => null,
+                'path'             => null,
+                'creation_time'    => null,
+                'last_access_time' => null,
+                'persistent'       => null,
+                'host_only'        => null,
+                'secure_only'      => null,
+                'http_only'        => null
+
+            ];
+
+            foreach ($cookieParts as $cookiePart) {
+                $attributeParts = explode(': ', $cookiePart, 2);
+
+                $attributeName = $attributeParts[0];
+                $attributeValue = isset($attributeParts[1]) ? $attributeParts[1] : null;
+
+                foreach (array_keys($storageAttributes) as $storageAttribute) {
+                    if ($storageAttribute === $attributeName) {
+                        $storageAttributes[$storageAttribute] = $attributeValue;
+                        continue 2;
+                    }
+                }
+            }
+
+            if (
+                null === $storageAttributes['name'] ||
+                null === $storageAttributes['value'] ||
+                null === $storageAttributes['expiry_time'] ||
+                null === $storageAttributes['domain'] ||
+                null === $storageAttributes['path'] ||
+                null === $storageAttributes['creation_time'] ||
+                null === $storageAttributes['last_access_time'] ||
+                null === $storageAttributes['persistent'] ||
+                null === $storageAttributes['host_only'] ||
+                null === $storageAttributes['secure_only'] ||
+                null === $storageAttributes['http_only']
+            ) {
                 continue;
             }
 
-            $this->cookies[] = [
+            $storageAttributes['expiry_time'] = (int)$storageAttributes['expiry_time'];
+            $storageAttributes['creation_time'] = (int)$storageAttributes['creation_time'];
+            $storageAttributes['last_access_time'] = (int)$storageAttributes['last_access_time'];
 
-                'name'             => $storageAttributes['name'],
-                'value'            => $storageAttributes['value'],
-                'expiry_time'      => (int)$storageAttributes['expiry_time'],
-                'domain'           => $storageAttributes['domain'],
-                'path'             => $storageAttributes['path'],
-                'creation_time'    => (int)$storageAttributes['creation_time'],
-                'last_access_time' => (int)$storageAttributes['last_access_time'],
-                'persistent'       => ('TRUE' === $storageAttributes['persistent']) ? true : false,
-                'host_only'        => ('TRUE' === $storageAttributes['host_only']) ? true : false,
-                'secure_only'      => ('TRUE' === $storageAttributes['secure_only']) ? true : false,
-                'http_only'        => ('TRUE' === $storageAttributes['http_only']) ? true : false
+            $storageAttributes['persistent'] = ('TRUE' === $storageAttributes['persistent']) ? true : false;
+            $storageAttributes['host_only'] = ('TRUE' === $storageAttributes['host_only']) ? true : false;
+            $storageAttributes['secure_only'] = ('TRUE' === $storageAttributes['secure_only']) ? true : false;
+            $storageAttributes['http_only'] = ('TRUE' === $storageAttributes['http_only']) ? true : false;
 
-            ];
+            $this->cookies[] = $storageAttributes;
         }
     }
 

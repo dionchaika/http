@@ -111,13 +111,6 @@ class Cookie
     protected $hasSecurePrefix = false;
 
     /**
-     * The cookie expiry time.
-     *
-     * @var int
-     */
-    protected $expiryTime = 0;
-
-    /**
      * The array of cookie storage attributes.
      *
      * @var mixed[]

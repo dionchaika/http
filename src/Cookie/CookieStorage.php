@@ -24,6 +24,13 @@ use Psr\Http\Message\ResponseInterface;
 class CookieStorage
 {
     /**
+     * The cookies limit.
+     *
+     * @var int
+     */
+    public $maxCookies = 3000;
+
+    /**
      * The array of cookies.
      *
      * @var mixed[]

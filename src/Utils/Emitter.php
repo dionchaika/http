@@ -14,6 +14,9 @@ namespace Dionchaika\Http\Utils;
 use RuntimeException;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * The PSR-7 HTTP response emitter.
+ */
 class Emitter
 {
     /**

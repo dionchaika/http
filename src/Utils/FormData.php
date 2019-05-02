@@ -13,6 +13,12 @@ namespace Dionchaika\Http\Utils;
 
 use InvalidArgumentException;
 
+/**
+ * The multipart/form-data
+ * model class for PSR-7 HTTP requests.
+ *
+ * @see https://tools.ietf.org/html/rfc2046#section-5.1
+ */
 class FormData
 {
     /**
@@ -25,12 +31,12 @@ class FormData
     /**
      * The array of form data entries.
      *
-     * @var array
+     * @var mixed[]
      */
     protected $entries = [];
 
     /**
-     * @param array $formData
+     * @param mixed[] $formData
      * @throws \InvalidArgumentException
      */
     public function __construct(array $formData = [])
@@ -72,11 +78,11 @@ class FormData
     /**
      * Append a new form data field.
      *
-     * @param string $name
-     * @param mixed $value
+     * @param string      $name
+     * @param mixed       $value
      * @param string|null $filename
-     * @param array $headers
-     * @return $this
+     * @param mixed[]     $headers
+     * @return self
      * @throws \InvalidArgumentException
      */
     public function append(
@@ -84,7 +90,7 @@ class FormData
         $value,
         ?string $filename = null,
         array $headers = []
-    ): FormData {
+    ): self {
         if (0 === strncmp($value, '@', 1)) {
             $filePath = substr($value, 1);
 
@@ -116,9 +122,11 @@ class FormData
         }
 
         $this->entries[$name][] = [
-            'value' => $value,
+
+            'value'    => $value,
             'filename' => $filename,
-            'headers' => $headers
+            'headers'  => $headers
+
         ];
 
         return $this;

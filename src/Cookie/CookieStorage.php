@@ -96,13 +96,23 @@ class CookieStorage
 
                 if (null !== $cookie->getMaxAge()) {
                     $storageAttributes['persistent'] = true;
-                    $storageAttributes['expiry_time'] = $cookie->getMaxAge();
+                    $storageAttributes['expiry_time'] = time() + $cookie->getMaxAge();
                 } else if (null !== $cookie->getExpires()) {
                     $storageAttributes['persistent'] = true;
-                    $storageAttributes['expiry_time'] = $cookie->getExpires();
+
+                    $storageAttributes['expiry_time'] = strtotime($cookie->getExpires());
+                    if (false === $storageAttributes['expiry_time']) {
+                        continue;
+                    }
                 } else {
                     $storageAttributes['persistent'] = false;
                     $storageAttributes['expiry_time'] = -2147483648;
+                }
+
+                if (-2147483648 > $storageAttributes['expiry_time']) {
+                    $storageAttributes['expiry_time'] = -2147483648;
+                } else if (2147483647 < $storageAttributes['expiry_time']) {
+                    $storageAttributes['expiry_time'] = 2147483647;
                 }
 
                 $domain = $cookie->getDomain() ?? '';

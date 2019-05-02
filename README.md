@@ -1,10 +1,10 @@
-# Http
+# HTTP
 The PSR HTTP Library.
 
 ## Requirements
 1. PHP 7.1.3
-2. PHP Zlib extention (optional)
-3. PHP Sockets extention (optional)
+2. PHP Zlib extention (for HTTP client)
+3. PHP Sockets extention (for HTTP client)
 
 ## Installation
 ```bash

@@ -46,13 +46,67 @@ class CookieStorage
     protected $cookies = [];
 
     /**
-     * Get the array of cookies.
+     * Get all cookies.
      *
      * @return mixed[]
      */
-    public function getCookies(): array
+    public function getAllCookies(): array
     {
         return $this->cookies;
+    }
+
+    /**
+     * Get the expired cookies.
+     *
+     * @return mixed[]
+     */
+    public function getExpiredCookies(): array
+    {
+        $cookies = [];
+        foreach ($this->cookies as $cookie) {
+            if (
+                $cookie['persistent'] &&
+                time() >= $cookie['expiry_time']
+            ) {
+                $cookies[] = $cookie;
+            }
+        }
+
+        return $cookies;
+    }
+
+    /**
+     * Get the session cookies.
+     *
+     * @return mixed[]
+     */
+    public function getSessionCookies(): array
+    {
+        $cookies = [];
+        foreach ($this->cookies as $cookie) {
+            if (!$cookie['persistent']) {
+                $cookies[] = $cookie;
+            }
+        }
+
+        return $cookies;
+    }
+
+    /**
+     * Get the non-session cookies.
+     *
+     * @return mixed[]
+     */
+    public function getNonSessionCookies(): array
+    {
+        $cookies = [];
+        foreach ($this->cookies as $cookie) {
+            if ($cookie['persistent']) {
+                $cookies[] = $cookie;
+            }
+        }
+
+        return $cookies;
     }
 
     /**
@@ -118,6 +172,8 @@ class CookieStorage
      */
     public function loadCookies(string $filename): void
     {
+        $this->clearAllCookies();
+
         if (!file_exists($filename)) {
             throw new InvalidArgumentException(
                 'File does not exists: '.$filename.'!'

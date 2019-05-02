@@ -47,7 +47,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * The array of uploaded files.
      *
-     * @var \Psr\Http\Message\UploadedFileInterface[]
+     * @var mixed[]
      */
     protected $uploadedFiles = [];
 
@@ -190,7 +190,7 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Get the array of uploaded files.
      *
-     * @return \Psr\Http\Message\UploadedFileInterface[]
+     * @return mixed[]
      */
     public function getUploadedFiles()
     {
@@ -201,7 +201,7 @@ class ServerRequest extends Request implements ServerRequestInterface
      * Return an instance
      * with the specified uploaded files.
      *
-     * @param \Psr\Http\Message\UploadedFileInterface[] $uploadedFiles
+     * @param mixed[] $uploadedFiles
      * @return self
      * @throws \InvalidArgumentException
      */
@@ -295,8 +295,8 @@ class ServerRequest extends Request implements ServerRequestInterface
     /**
      * Filter an array of uploaded files.
      *
-     * @param \Psr\Http\Message\UploadedFileInterface[] $uploadedFiles
-     * @return \Psr\Http\Message\UploadedFileInterface[]
+     * @param mixed[] $uploadedFiles
+     * @return mixed[]
      * @throws \InvalidArgumentException
      */
     protected function filterUploadedFiles(array $uploadedFiles)

@@ -66,7 +66,7 @@ class CookieStorage
             );
         } else {
             $request = $request->withUri(
-                $request->getUri()->withPath('/'.ltrim($request->getUri()->getPath()))
+                $request->getUri()->withPath('/'.ltrim($request->getUri()->getPath(), '/'))
             );
         }
 
@@ -91,7 +91,7 @@ class CookieStorage
                 $cookie = Cookie::createFromString($setCookie);
 
                 $storageAttributes['name'] = $cookie->getName();
-                $storageAttributes['value'] = $cookie->getValue();
+                $storageAttributes['value'] = $cookie->getValue() ?? '';
                 $storageAttributes['creation_time'] = $storageAttributes['last_access_time'] = time();
 
                 if (null !== $cookie->getMaxAge()) {
@@ -147,6 +147,54 @@ class CookieStorage
                 $this->cookies[] = $storageAttributes;
             } catch (Exception $e) {}
         }
+    }
+
+    /**
+     * Include cookies to request.
+     *
+     * @param \Psr\Http\Message\RequestInterface $request
+     * @return \Psr\Http\Message\RequestInterface
+     * @throws \InvalidArgumentException
+     */
+    public function includeToRequest(RequestInterface $request): RequestInterface
+    {
+        $scheme = $request->getUri()->getScheme();
+        $scheme = ('' === $scheme) ? 'http' : $scheme;
+
+        if ('' === $request->getUri()->getHost()) {
+            throw new InvalidArgumentException(
+                'Invalid request! Host is not defined.'
+            );
+        }
+
+        $path = $request->getUri()->getPath();
+        $path = ('' === $path) ? '/' : '/'.ltrim($path, '/');
+
+        foreach ($this->cookies as $cookie) {
+            if (
+                $cookie['host_only'] &&
+                0 !== strcasecmp($cookie['domain'], $request->getUri()->getHost())
+            ) {
+                continue;
+            } else if (
+                !$cookie['host_only'] &&
+                !$this->isMatchesDomain($cookie['domain'], $request->getUri()->getHost())
+            ) {
+                continue;
+            }
+
+            if (!$this->isMatchesPath($cookie['path'], $path)) {
+                continue;
+            }
+
+            if ($cookie['secure_only'] && 'https' !== $scheme) {
+                continue;
+            }
+
+            $request = $request->withAddedHeader('Cookie', $cookie['name'].'='.$cookie['value']);
+        }
+
+        return $request;
     }
 
     /**

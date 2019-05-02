@@ -32,13 +32,15 @@ class XMLBuilder
      *                  //           <age>Max</age>
      *                  //           <email>Max</email>
      *                  //           <married value="0" />
+     *                  //           <friends></friends>
      *                  //      </user>
      *                  'user id="1"' => [
      *
      *                      'name'              => 'Max',
      *                      'age'               => 21,
      *                      'email'             => 'max@email.com',
-     *                      'married value="0"' => []
+     *                      'married value="0"' => [],
+     *                      'friends' => ''
      *
      *                  ],
      *                  'user id="2"' => [
@@ -46,7 +48,8 @@ class XMLBuilder
      *                      'name'              => 'John',
      *                      'age'               => 23,
      *                      'email'             => 'john@email.com'
-     *                      'married value="1"' => []
+     *                      'married value="1"' => [],
+     *                      'friends' => ''
      *
      *                  ],
      *                  'user id="3"' => [
@@ -54,7 +57,8 @@ class XMLBuilder
      *                      'name'              => 'Steve',
      *                      'age'               => 25,
      *                      'email'             => 'steve@email.com'
-     *                      'married value="1"' => []
+     *                      'married value="1"' => [],
+     *                      'friends' => ''
      *
      *                  ],
      *

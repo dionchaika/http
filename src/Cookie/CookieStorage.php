@@ -12,6 +12,7 @@
 namespace Dionchaika\Http\Cookie;
 
 use Exception;
+use RuntimeException;
 use InvalidArgumentException;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -43,6 +44,149 @@ class CookieStorage
      * @var mixed[]
      */
     protected $cookies = [];
+
+    /**
+     * Get the array of cookies.
+     *
+     * @return mixed[]
+     */
+    public function getCookies(): array
+    {
+        return $this->cookies;
+    }
+
+    /**
+     * Clear all cookies.
+     *
+     * @return void
+     */
+    public function clearAllCookies(): void
+    {
+        $this->cookies = [];
+    }
+
+    /**
+     * Clear the expired cookies.
+     *
+     * @return void
+     */
+    public function clearExpiredCookies(): void
+    {
+        foreach ($this->cookies as $key => $value) {
+            if (
+                $value['persistent'] &&
+                time() >= $value['expiry_time']
+            ) {
+                unset($this->cookies[$key]);
+            }
+        }
+    }
+
+    /**
+     * Clear the session cookies.
+     *
+     * @return void
+     */
+    public function clearSessionCookies(): void
+    {
+        foreach ($this->cookies as $key => $value) {
+            if (!$value['persistent']) {
+                unset($this->cookies[$key]);
+            }
+        }
+    }
+
+    /**
+     * Clear the excess cookies.
+     *
+     * @return void
+     */
+    public function clearExcessCookies(): void
+    {
+        $this->clearExpiredCookies();
+
+        //
+    }
+
+    /**
+     * Load cookies from file.
+     *
+     * @param string $filename
+     * @return void
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     */
+    public function loadCookies(string $filename): void
+    {
+        if (!file_exists($filename)) {
+            throw new InvalidArgumentException(
+                'File does not exists: '.$filename.'!'
+            );
+        }
+
+        $contents = file_get_contents($filename);
+        if (false === $contents) {
+            throw new RuntimeException(
+                'Unable to get the contents of the file: '.$filename.'!'
+            );
+        }
+
+        $contentsParts = explode("\r\n", $contents);
+        foreach ($contentsParts as $contentsPart) {
+            $storageAttributes = explode(' ', $contentsPart);
+
+            if (11 !== count($storageAttributes)) {
+                continue;
+            }
+
+            $this->cookies[] = [
+
+                'name'             => $storageAttributes['name'],
+                'value'            => $storageAttributes['value'],
+                'expiry_time'      => (int)$storageAttributes['expiry_time'],
+                'domain'           => $storageAttributes['domain'],
+                'path'             => $storageAttributes['path'],
+                'creation_time'    => (int)$storageAttributes['creation_time'],
+                'last_access_time' => (int)$storageAttributes['last_access_time'],
+                'persistent'       => ('TRUE' === $storageAttributes['persistent']) ? true : false,
+                'host_only'        => ('TRUE' === $storageAttributes['host_only']) ? true : false,
+                'secure_only'      => ('TRUE' === $storageAttributes['secure_only']) ? true : false,
+                'http_only'        => ('TRUE' === $storageAttributes['http_only']) ? true : false
+
+            ];
+        }
+    }
+
+    /**
+     * Store cookies to file.
+     *
+     * @param string $filename
+     * @return void
+     * @throws \RuntimeException
+     */
+    public function storeCookies(string $filename): void
+    {
+        $contents = '';
+        foreach ($this->cookies as $cookie) {
+            $contents .= $cookie['name'];
+            $contents .= " {$cookie['value']}";
+            $contents .= " {$cookie['expiry_time']}";
+            $contents .= " {$cookie['domain']}";
+            $contents .= " {$cookie['path']}";
+            $contents .= " {$cookie['creation_time']}";
+            $contents .= " {$cookie['last_access_time']}";
+            $contents .= " {${$cookie['persistent'] ? 'TRUE' : 'FALSE'}}";
+            $contents .= " {${$cookie['host_only'] ? 'TRUE' : 'FALSE'}}";
+            $contents .= " {${$cookie['secure_only'] ? 'TRUE' : 'FALSE'}}";
+            $contents .= " {${$cookie['http_only'] ? 'TRUE' : 'FALSE'}}\r\n";
+        }
+
+        if (false === file_put_contents($filename, $contents)) {
+            throw new RuntimeException(
+                'Unable to store cookies to file: '.$filename.'!'
+            );
+        }
+    }
 
     /**
      * Receive cookies from response.

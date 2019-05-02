@@ -24,11 +24,18 @@ use Psr\Http\Message\ResponseInterface;
 class CookieStorage
 {
     /**
-     * The cookies limit.
+     * The max cookies count.
      *
      * @var int
      */
     public $maxCookies = 3000;
+
+    /**
+     * The max cookies per domain count.
+     *
+     * @var int
+     */
+    public $maxCookiesPerDomain = 50;
 
     /**
      * The array of cookies.

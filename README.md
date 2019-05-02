@@ -2,7 +2,7 @@
 The PSR HTTP Library.
 
 ## Requirements
-1. PHP 7.1.3
+1. PHP 7.1.3 or higher
 2. PHP Zlib extention (for HTTP client)
 3. PHP Sockets extention (for HTTP client)
 

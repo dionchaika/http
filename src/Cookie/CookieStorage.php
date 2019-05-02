@@ -152,14 +152,14 @@ class CookieStorage
             ];
 
             foreach ($cookieParts as $cookiePart) {
-                $attributeParts = explode(': ', $cookiePart, 2);
+                $storageAttributeParts = explode(': ', $cookiePart, 2);
 
-                $attributeName = $attributeParts[0];
-                $attributeValue = isset($attributeParts[1]) ? $attributeParts[1] : null;
+                $storageAttributeName = $storageAttributeParts[0];
+                $storageAttributeValue = isset($storageAttributeParts[1]) ? $storageAttributeParts[1] : null;
 
                 foreach (array_keys($storageAttributes) as $storageAttribute) {
-                    if ($storageAttribute === $attributeName) {
-                        $storageAttributes[$storageAttribute] = $attributeValue;
+                    if ($storageAttribute === $storageAttributeName) {
+                        $storageAttributes[$storageAttribute] = $storageAttributeValue;
                         continue 2;
                     }
                 }

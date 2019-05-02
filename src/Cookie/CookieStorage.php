@@ -17,7 +17,7 @@ use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * The cookie storage model.
+ * The HTTP cookie storage model.
  *
  * @see https://tools.ietf.org/html/rfc6265
  */

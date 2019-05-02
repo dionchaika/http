@@ -58,10 +58,95 @@ class CookieStorage
 
         foreach ($response->getHeader('Set-Cookie') as $setCookie) {
             try {
+                $storageAttributes = [
+
+                    'name'             => null,
+                    'value'            => null,
+                    'expiry_time'      => null,
+                    'domain'           => null,
+                    'path'             => null,
+                    'creation_time'    => null,
+                    'last_access_time' => null,
+                    'persistent'       => null,
+                    'host_only'        => null,
+                    'secure_only'      => null,
+                    'http_only'        => null
+
+                ];
+
                 $cookie = Cookie::createFromString($setCookie);
 
-                
+                $storageAttributes['name'] = $cookie->getName();
+                $storageAttributes['value'] = $cookie->getValue();
+                $storageAttributes['creation_time'] = $storageAttributes['last_access_time'] = time();
+
+                if (null !== $cookie->getMaxAge()) {
+                    $storageAttributes['persistent'] = true;
+                    $storageAttributes['expiry_time'] = $cookie->getMaxAge();
+                } else if (null !== $cookie->getExpires()) {
+                    $storageAttributes['persistent'] = true;
+                    $storageAttributes['expiry_time'] = $cookie->getExpires();
+                } else {
+                    $storageAttributes['persistent'] = false;
+                    $storageAttributes['expiry_time'] = -2147483648;
+                }
+
+                $domain = $cookie->getDomain() ?? '';
+                if ('' !== $domain) {
+
+                }
+
             } catch (Exception $e) {}
         }
+    }
+
+    /**
+     * Check is the cookie path
+     * matches a request URI path.
+     *
+     * @param string $cookiePath
+     * @param string $requestUriPath
+     * @return bool
+     */
+    protected function isMatchesPath(string $cookiePath, string $requestUriPath): bool
+    {
+        if ('/' === $cookiePath || $cookiePath === $requestUriPath) {
+            return true;
+        }
+
+        if (0 !== strpos($requestUriPath, $cookiePath)) {
+            return false;
+        }
+
+        if ('/' === substr($cookiePath, -1, 1)) {
+            return true;
+        }
+
+        return '/' === substr($requestUriPath, strlen($cookiePath), 1);
+    }
+
+    /**
+     * Check is the cookie domain
+     * matches a request URI domain.
+     *
+     * @param string $cookieDomain
+     * @param string $requestUriDomain
+     * @return bool
+     */
+    protected function isMatchesDomain(string $cookieDomain, string $requestUriDomain): bool
+    {
+        if (0 === strcasecmp($cookieDomain, $requestUriDomain)) {
+            return true;
+        }
+
+        if (filter_var($requestUriDomain, \FILTER_VALIDATE_IP)) {
+            return false;
+        }
+
+        if (preg_match('/\.'.preg_quote($cookieDomain, '/').'$/', $requestUriDomain)) {
+            return true;
+        }
+
+        return false;
     }
 }

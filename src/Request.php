@@ -61,7 +61,7 @@ class Request extends Message implements RequestInterface
 
         $this->uri = $uri;
 
-        if ('1.1' === $this->getProtocolVersion()) {
+        if ('1.1' === $this->protocolVersion) {
             $this->headers['host'] = [
                 'name' => 'Host',
                 'values' => [$this->getHostHeader()]

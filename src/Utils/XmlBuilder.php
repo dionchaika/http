@@ -29,8 +29,8 @@ class XMLBuilder
      *                  //
      *                  //      <user id="1">
      *                  //           <name>Max</name>
-     *                  //           <age>Max</age>
-     *                  //           <email>Max</email>
+     *                  //           <age>21</age>
+     *                  //           <email>max@email.com</email>
      *                  //           <married value="0" />
      *                  //           <friends></friends>
      *                  //      </user>

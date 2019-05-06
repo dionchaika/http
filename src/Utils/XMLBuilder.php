@@ -61,7 +61,7 @@ class XMLBuilder
      *                      'married value="1"' => [],
      *                      'friends' => ''
      *
-     *                  ],
+     *                  ]
      *
      *              ]
      *

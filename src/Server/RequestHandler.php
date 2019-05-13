@@ -24,7 +24,7 @@ class RequestHandler implements RequestHandlerInterface
      * The array of
      * request handler middleware.
      *
-     * @var array
+     * @var \Psr\Http\Server\MiddlewareInterface[]
      */
     protected $middleware = [];
 
@@ -37,7 +37,7 @@ class RequestHandler implements RequestHandlerInterface
 
     /**
      * @param \Psr\Http\Server\RequestHandlerInterface|\Closure|string $fallbackHandler
-     * @param array $middleware
+     * @param \Psr\Http\Server\MiddlewareInterface[] $middleware
      */
     public function __construct($fallbackHandler, array $middleware = []) {
         $this->fallbackHandler = $fallbackHandler;

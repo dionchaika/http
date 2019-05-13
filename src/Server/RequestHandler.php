@@ -48,9 +48,9 @@ class RequestHandler implements RequestHandlerInterface
      * Add a new middleware.
      *
      * @param \Psr\Http\Server\MiddlewareInterface|\Closure|string $middleware
-     * @return $this
+     * @return self
      */
-    public function add($middleware): RequestHandlerInterface
+    public function add($middleware): self
     {
         $this->middleware[] = $middleware;
         return $this;

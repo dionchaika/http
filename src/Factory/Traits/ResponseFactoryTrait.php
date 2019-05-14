@@ -69,17 +69,24 @@ trait ResponseFactoryTrait
      * Create a new JSON response.
      *
      * @param mixed[] $data
+     * @param int[]   $opts
+     * @param int     $depth
      * @param int     $code
      * @param string  $reasonPhrase
      * @return \Psr\Http\Message\ResponseInterface
      * @throws \InvalidArgumentException
      */
-    public function createJsonResponse(array $data, int $code = 200, string $reasonPhrase = ''): ResponseInterface
+    public function createJsonResponse(array $data, array $opts = [], int $depth = 512, int $code = 200, string $reasonPhrase = ''): ResponseInterface
     {
-        $json = json_encode($data);
+        $options = 0;
+        foreach ($opts as $opt) {
+            $options |= $opt;
+        }
+
+        $json = json_encode($data, $options, $depth);
         if (false === $json) {
             throw new InvalidArgumentException(
-                'Unable to generate a JSON body!'
+                'JSON encode error #'.json_last_error().': '.json_last_error_msg().'!'
             );
         }
 

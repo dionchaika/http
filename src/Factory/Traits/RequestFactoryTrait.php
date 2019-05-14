@@ -61,10 +61,12 @@ trait RequestFactoryTrait
      * @param string                                $method
      * @param \Psr\Http\Message\UriInterface|string $uri
      * @param mixed[]                               $data
+     * @param int[]                                 $opts
+     * @param int                                   $depth
      * @return \Psr\Http\Message\RequestInterface
      * @throws \InvalidArgumentException
      */
-    public function createJsonRequest(string $method, $uri, array $data): RequestInterface
+    public function createJsonRequest(string $method, $uri, array $data, array $opts = [], int $depth = 512): RequestInterface
     {
         if ('GET' === $method || 'HEAD' === $method) {
             throw new InvalidArgumentException(
@@ -72,10 +74,15 @@ trait RequestFactoryTrait
             );
         }
 
-        $json = json_encode($data);
+        $options = 0;
+        foreach ($opts as $opt) {
+            $options |= $opt;
+        }
+
+        $json = json_encode($data, $options, $depth);
         if (false === $json) {
             throw new InvalidArgumentException(
-                'Unable to generate a JSON body!'
+                'JSON encode error #'.json_last_error().': '.json_last_error_msg().'!'
             );
         }
 

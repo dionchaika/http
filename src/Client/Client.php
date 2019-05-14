@@ -12,7 +12,6 @@
 namespace Dionchaika\Http\Client;
 
 use Throwable;
-use RuntimeException;
 use Dionchaika\Http\Uri;
 use Dionchaika\Http\Stream;
 use Dionchaika\Http\Response;

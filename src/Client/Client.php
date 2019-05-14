@@ -122,6 +122,8 @@ class Client implements ClientInterface
      *      20. debug_response_body (bool, default: false) - write a response body to the debug output.
      *
      * @param mixed[] $config
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
      */
     public function __construct(array $config = [])
     {
@@ -130,6 +132,14 @@ class Client implements ClientInterface
         }
 
         $this->cookieStorage = new CookieStorage;
+
+        if (
+            $this->config['cookies'] &&
+            null !== $this->config['cookies_file']
+        ) {
+            $this->cookieStorage->loadCookies($this->config['cookies_file']);
+            $this->cookieStorage->clearExpiredCookies();
+        }
     }
 
     /**
@@ -344,20 +354,7 @@ class Client implements ClientInterface
         $this->debugConnection($remoteSocket);
 
         if ($this->config['cookies']) {
-            $this->clearExpiredCookies();
-
-            foreach ($this->cookies as $key => $value) {
-                if (!$value->isMatchesDomain($request->getUri()->getHost())) {
-                    continue;
-                }
-
-                if (!$value->isMatchesPath($request->getUri()->getPath())) {
-                    continue;
-                }
-
-                $request = $request
-                    ->withAddedHeader('Cookie', $value->getNameValuePair());
-            }
+            $request = $this->cookieStorage->includeToRequest($request);
         }
 
         if (
@@ -430,29 +427,7 @@ class Client implements ClientInterface
         }
 
         if ($this->config['cookies']) {
-            foreach ($response->getHeader('Set-Cookie') as $setCookie) {
-                try {
-                    $cookie = Cookie::createFromString($setCookie);
-
-                    foreach ($this->cookies as $key => $value) {
-                        if (
-                            $value->getName() === $cookie->getName() &&
-                            $value->getPath() === $cookie->getPath() &&
-                            $value->getDomain() === $cookie->getDomain()
-                        ) {
-                            unset($this->cookies[$key]);
-
-                            if (!$cookie->isExpired()) {
-                                $this->cookies[] = $cookie;
-                            }
-
-                            break;
-                        }
-                    }
-
-                    $this->cookies[] = $cookie;
-                } catch (Throwable $e) {}
-            }
+            $response = $this->cookieStorage->receiveFromResponse($request, $response);
         }
 
         if (

@@ -506,7 +506,7 @@ class Client implements ClientInterface
             (201 === $response->getStatusCode() || (300 < $response->getStatusCode() && 400 > $response->getStatusCode())) &&
             $response->hasHeader('Location') &&
             $this->config['redirects'] &&
-            $this->redirectsCount <= $this->config['max_redirects']
+            $this->redirectsCount < $this->config['max_redirects']
         ) {
             if (
                 303 === $response->getStatusCode() ||

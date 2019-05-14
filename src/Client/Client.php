@@ -300,10 +300,7 @@ class Client implements ClientInterface
                 ->withProtocolVersion('1.1');
         }
 
-        if (
-            '1.1' === $request->getProtocolVersion() &&
-            !$request->hasHeader('Connection')
-        ) {
+        if ('1.1' === $request->getProtocolVersion()) {
             $request = $request
                 ->withHeader('Connection', 'close');
         }

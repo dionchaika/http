@@ -144,17 +144,16 @@ class Client implements ClientInterface
 
     public function __destruct()
     {
-        if (
-            $this->config['cookies'] &&
-            null !== $this->config['cookies_file']
-        ) {
-            $this->cookieStorage->clearSessionCookies();
-            $this->cookieStorage->clearExpiredCookies();
-
-            try {
+        try {
+            if (
+                $this->config['cookies'] &&
+                null !== $this->config['cookies_file']
+            ) {
+                $this->cookieStorage->clearSessionCookies();
+                $this->cookieStorage->clearExpiredCookies();
                 $this->cookieStorage->storeCookies($this->config['cookies_file']);
-            } catch (Throwable $e) {}
-        }
+            }
+        } catch (Throwable $e) {}
     }
 
     /**

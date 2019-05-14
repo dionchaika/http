@@ -369,6 +369,7 @@ class Client implements ClientInterface
         $this->debugConnection($remoteSocket);
 
         if ($this->config['cookies']) {
+            $this->cookieStorage->clearExpiredCookies();
             $request = $this->cookieStorage->includeToRequest($request);
         }
 

@@ -18,6 +18,11 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+/**
+ * The PSR-15 request handler model.
+ *
+ * @see https://www.php-fig.org/psr/psr-15/
+ */
 class RequestHandler implements RequestHandlerInterface
 {
     /**

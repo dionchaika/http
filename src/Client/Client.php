@@ -21,6 +21,11 @@ use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * The PSR-18 HTTP client model.
+ *
+ * @see https://www.php-fig.org/psr/psr-18/
+ */
 class Client implements ClientInterface
 {
     /**

@@ -128,61 +128,18 @@ class Client implements ClientInterface
         if (!empty($config)) {
             $this->setConfig($config);
         }
+
+        $this->cookieStorage = new CookieStorage;
     }
 
     /**
-     * Get the array
-     * of client cookies.
+     * Get the client cookie storage.
      *
-     * @return \Dionchaika\Http\Cookie\Cookie[]
+     * @return \Dionchaika\Http\Cookie\CookieStorage
      */
-    public function getCookies(): array
+    public function getCookieStorage(): CookieStorage
     {
-        return $this->cookies;
-    }
-
-    /**
-     * Clear cookies.
-     *
-     * @return void
-     */
-    public function clearCookies(): void
-    {
-        $this->cookies = [];
-    }
-
-    /**
-     * Clear expired cookies.
-     *
-     * @return void
-     */
-    public function clearExpiredCookies(): void
-    {
-        foreach ($this->cookies as $key => $value) {
-            if (
-                (null !== $value->getExpires() || null !== $value->getMaxAge()) &&
-                $value->isExpired()
-            ) {
-                unset($this->cookies[$key]);
-            }
-        }
-    }
-
-    /**
-     * Clear session cookies.
-     *
-     * @return void
-     */
-    public function clearSessionCookies(): void
-    {
-        foreach ($this->cookies as $key => $value) {
-            if (
-                null === $value->getExpires() &&
-                null === $value->getMaxAge()
-            ) {
-                unset($this->cookies[$key]);
-            }
-        }
+        return $this->cookieStorage;
     }
 
     /**

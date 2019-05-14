@@ -427,7 +427,7 @@ class Client implements ClientInterface
         }
 
         if ($this->config['cookies']) {
-            $response = $this->cookieStorage->receiveFromResponse($request, $response);
+            $this->cookieStorage->receiveFromResponse($request, $response);
         }
 
         if (

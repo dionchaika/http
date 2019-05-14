@@ -87,7 +87,7 @@ class RequestHandler implements RequestHandlerInterface
             throw new RuntimeException(
                 'Invalid fallback handler! '
                 .'Fallback handler must be an instance of \\Closure '
-                .'or an instance of \\Psr\\Http\\Server\\MiddlewareInterface'
+                .'or an instance of \\Psr\\Http\\Server\\RequestHandlerInterface.'
             );
         }
 
@@ -107,7 +107,7 @@ class RequestHandler implements RequestHandlerInterface
         throw new RuntimeException(
             'Invalid middleware! '
             .'Middleware must be an instance of \\Closure '
-            .'or an instance of \\Psr\\Http\\Server\\MiddlewareInterface'
+            .'or an instance of \\Psr\\Http\\Server\\MiddlewareInterface.'
         );
     }
 }

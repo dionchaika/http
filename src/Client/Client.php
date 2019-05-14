@@ -16,10 +16,10 @@ use Dionchaika\Http\Uri;
 use Dionchaika\Http\Stream;
 use Dionchaika\Http\Response;
 use InvalidArgumentException;
-use Dionchaika\Http\Cookie\Cookie;
 use Psr\Http\Client\ClientInterface;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
+use Dionchaika\Http\Cookie\CookieStorage;
 
 /**
  * The PSR-18 HTTP client model.
@@ -60,12 +60,11 @@ class Client implements ClientInterface
     ];
 
     /**
-     * The array
-     * of client cookies.
+     * The client cookie storage.
      *
-     * @var \Dionchaika\Http\Cookie\Cookie[]
+     * @var \Dionchaika\Http\Cookie\CookieStorage
      */
-    protected $cookies = [];
+    protected $cookieStorage;
 
     /**
      * The client redirects count.

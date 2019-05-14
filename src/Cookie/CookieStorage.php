@@ -270,8 +270,6 @@ class CookieStorage
 
             $this->cookies[] = $storageAttributes;
         }
-
-        $this->clearExpiredCookies();
     }
 
     /**
@@ -283,8 +281,6 @@ class CookieStorage
      */
     public function storeCookies(string $filename): void
     {
-        $this->clearExpiredCookies();
-
         $contents = '';
         foreach ($this->cookies as $cookie) {
             $persistent = $cookie['persistent'] ? 'TRUE' : 'FALSE';

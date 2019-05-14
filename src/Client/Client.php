@@ -311,7 +311,7 @@ class Client implements ClientInterface
         if ('' === $request->getUri()->getScheme()) {
             $request = $request
                 ->withUri(
-                    $request->getUri()->withScheme('https')
+                    $request->getUri()->withScheme('http')
                 );
         }
 

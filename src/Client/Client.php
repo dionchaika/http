@@ -286,8 +286,10 @@ class Client implements ClientInterface
     public function sendRequest(RequestInterface $request): ResponseInterface
     {
         foreach ($this->config['headers'] as $name => $value) {
-            $request = $request
-                ->withHeader($name, $value);
+            if (!$request->hasHeader($name)) {
+                $request = $request
+                    ->withHeader($name, $value);
+            }
         }
 
         if ('' === $request->getMethod()) {

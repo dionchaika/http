@@ -335,6 +335,49 @@ class Uri implements UriInterface
 
     /**
      * Return an instance
+     * with the specified URI query parameter.
+     *
+     * @param string $name
+     * @param string $value
+     * @return static
+     * @throws \InvalidArgumentException
+     */
+    public function withQueryParam($name, $value)
+    {
+        $new = clone $this;
+
+        $queryParams = explode('&', $new->query);
+        $queryParams[] = $name.'='.$value;
+
+        $new->query = $new->filterQuery(implode('&', $queryParams));
+
+        return $new;
+    }
+
+    /**
+     * Return an instance
+     * with the specified URI query parameters.
+     *
+     * @param mixed[] $params
+     * @return static
+     * @throws \InvalidArgumentException
+     */
+    public function withQueryParams($params)
+    {
+        $new = clone $this;
+
+        $queryParams = explode('&', $new->query);
+        foreach ($params as $name => $value) {
+            $queryParams[] = $name.'='.$value;
+        }
+
+        $new->query = $new->filterQuery(implode('&', $queryParams));
+
+        return $new;
+    }
+
+    /**
+     * Return an instance
      * with the specified URI fragment.
      *
      * @param string $fragment

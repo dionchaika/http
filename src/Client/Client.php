@@ -394,7 +394,7 @@ class Client implements ClientInterface
 
             if (!$request->hasHeader('Content-Length')) {
                 $request = $request
-                    ->withHeader('Content-Length', (string)$$request->getBody()->getSize());
+                    ->withHeader('Content-Length', (string)$request->getBody()->getSize());
             }
         }
 
@@ -505,7 +505,7 @@ class Client implements ClientInterface
         $this->debugResponse($response);
 
         if (
-            (201 === $response->getStatusCode() || (300 < $response->getStatusCode() && 400 > $response->getStatusCode())) &&
+            (300 < $response->getStatusCode() && 400 > $response->getStatusCode()) &&
             $response->hasHeader('Location') &&
             $this->config['redirects'] &&
             $this->redirectsCount < $this->config['max_redirects']
